@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.32802.440
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssetManager", "AssetManager\AssetManager.csproj", "{57FB1CE4-5C8A-402F-B0C7-19562425C95D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssetManager.Wpf", "AssetManager.Wpf\AssetManager.Wpf.csproj", "{EFD4A4B3-39B6-42FD-9E42-799FFC25937E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssetManager.Perforce", "AssetManager.Perforce\AssetManager.Perforce.csproj", "{134BE799-678B-4E23-B655-A4BEB185B545}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{57FB1CE4-5C8A-402F-B0C7-19562425C95D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57FB1CE4-5C8A-402F-B0C7-19562425C95D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57FB1CE4-5C8A-402F-B0C7-19562425C95D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFD4A4B3-39B6-42FD-9E42-799FFC25937E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFD4A4B3-39B6-42FD-9E42-799FFC25937E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFD4A4B3-39B6-42FD-9E42-799FFC25937E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFD4A4B3-39B6-42FD-9E42-799FFC25937E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{134BE799-678B-4E23-B655-A4BEB185B545}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{134BE799-678B-4E23-B655-A4BEB185B545}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{134BE799-678B-4E23-B655-A4BEB185B545}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{134BE799-678B-4E23-B655-A4BEB185B545}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

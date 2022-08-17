@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AssetManager.Wpf
+namespace AssetManager.Perforce
 {
-    public class ViewModel
+    public static class PerforceUtils
     {
     }
 }
