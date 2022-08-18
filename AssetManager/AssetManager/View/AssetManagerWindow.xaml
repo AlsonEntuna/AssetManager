@@ -5,15 +5,19 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:AssetManager"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="clr-namespace:AssetManager.ViewModel"
     Title="Asset Manager"
     Width="800"
     Height="850"
     ResizeMode="CanResizeWithGrip"
     mc:Ignorable="d">
+    <Window.DataContext>
+        <viewmodels:AssetManagerViewModel />
+    </Window.DataContext>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="Options">
-                <MenuItem Header="Perforce Setup" />
+                <MenuItem Command="{Binding PerforceSetupCommand}" Header="Perforce Setup" />
             </MenuItem>
         </Menu>
         <Grid>
@@ -22,12 +26,18 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="50" />
+                <RowDefinition Height="auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Grid.Column="0">
-                <Button Content="Sync" />
-                <Button Content="Open Root Folder" />
+                <Button
+                    Command="{Binding SyncCommand}"
+                    Content="Sync"
+                    Style="{StaticResource ButtonStyle.Main}" />
+                <Button
+                    Command="{Binding OpenRootFolderCommand}"
+                    Content="Open Root Folder"
+                    Style="{StaticResource ButtonStyle.Main}" />
             </StackPanel>
             <GroupBox Grid.Row="1" Header="Files">
                 <TreeView />
