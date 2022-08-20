@@ -1,4 +1,5 @@
-﻿using AssetManager.Wpf;
+﻿using AssetManager.Perforce;
+using AssetManager.Wpf;
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,7 @@ namespace AssetManager.ViewModel
         private void SetupAndConnect()
         {
             // TODO: Setup perforce connection here....
+            PerforceTools.Connect(Server, User);
         }
     }
 }

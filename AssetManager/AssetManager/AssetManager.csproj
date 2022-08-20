@@ -133,6 +133,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AssetManager.Perforce\AssetManager.Perforce.csproj">
+      <Project>{134BE799-678B-4E23-B655-A4BEB185B545}</Project>
+      <Name>AssetManager.Perforce</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AssetManager.Wpf\AssetManager.Wpf.csproj">
       <Project>{efd4a4b3-39b6-42fd-9e42-799ffc25937e}</Project>
       <Name>AssetManager.Wpf</Name>

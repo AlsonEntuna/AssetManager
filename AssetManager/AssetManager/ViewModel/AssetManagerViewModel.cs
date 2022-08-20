@@ -1,4 +1,5 @@
-﻿using AssetManager.View;
+﻿using AssetManager.Perforce;
+using AssetManager.View;
 using AssetManager.Wpf;
 using CommunityToolkit.Mvvm.Input;
 using System.Windows.Input;
@@ -17,7 +18,7 @@ namespace AssetManager.ViewModel
 
         private void Sync()
         {
-
+            //PerforceTools.Sync();
         }
 
         private void OpenRootFolder()
