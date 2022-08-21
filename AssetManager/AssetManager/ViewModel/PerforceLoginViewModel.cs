@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace AssetManager.ViewModel
 {
-    class PerforceLoginViewModel : ViewModelBase
+    public class PerforceLoginViewModel : ViewModelBase
     {
         private string _server;
         public string Server

@@ -7,14 +7,18 @@ namespace AssetManager.Perforce
     {
         public static Connection Connection;
         public static Repository Repository;
+
+        public static bool Login(string user, string pass)
+        {
+            return false;
+        }
         public static bool Connect(string server, string user)
         {
             Options options = new Options();
 
-            Server pServer = null;
-            pServer = new Server(new ServerAddress(server));
+            Server p4Server = new Server(new ServerAddress(server));
 
-            Repository = new Repository(pServer);
+            Repository = new Repository(p4Server);
             Connection = Repository.Connection;
             Connection.UserName = user;
 
@@ -53,6 +57,31 @@ namespace AssetManager.Perforce
             int defaultChangelist = 0;
             AddFilesCmdOptions markForAddOptions = new AddFilesCmdOptions(AddFilesCmdFlags.None, defaultChangelist, null);
             addedFiles = Connection.Client.AddFiles(markForAddOptions, filesToAdd.ToArray());
+        }
+
+        public static IList<string> GetUserWorkspaces(string user = "", string server = "")
+        {
+            List<string> workspaces = new List<string>();
+            if (string.IsNullOrEmpty(user))
+            {
+                user = Connection.UserName;
+            }
+
+            if (string.IsNullOrEmpty (server))
+            {
+                server = Connection.Server.Address.Uri;
+            }
+            Options opts = new Options();
+            opts["-s"] = server;
+            opts["-u"] = user;
+            var clients = Repository.GetClients(opts);
+            return workspaces;
+        }
+
+        public static void SubmitChangelist(int changelistNo, out SubmitResults results)
+        {
+            
+            results = null;
         }
     }
 }
