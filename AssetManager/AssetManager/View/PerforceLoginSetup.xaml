@@ -21,24 +21,32 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
             <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
         <TextBlock
             Grid.Row="0"
             Grid.Column="0"
             Text="Server: " />
-        <TextBox Text="{Binding Server, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="0" Grid.Column="1" />
+        <TextBox VerticalContentAlignment="Center" Text="{Binding Server, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="0" Grid.Column="1" />
         <TextBlock
             Grid.Row="1"
             Grid.Column="0"
             Text="User:" />
-        <TextBox Grid.Row="1" Grid.Column="1" />
-        <Button
+        <TextBox Text="{Binding User, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="1" />
+        <TextBlock
             Grid.Row="2"
+            Grid.Column="0"
+            Text="User:" />
+        <TextBox Text="{Binding Password, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="1" />
+
+        <Button
+            Grid.Row="3"
             Height="35"
             Grid.Column="0"
             Grid.ColumnSpan="2"
             Content="Setup and Connect"
+            Command="{Binding SetupAndConnectCommand}"
             CommandParameter="{Binding ElementName=RootWindow}"
             Style="{StaticResource ButtonStyle.Main}" />
     </Grid>

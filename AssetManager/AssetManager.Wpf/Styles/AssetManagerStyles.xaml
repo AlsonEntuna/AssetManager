@@ -8,7 +8,6 @@
         <Setter Property="Margin" Value="1" />
         <Setter Property="Background" Value="{StaticResource Button.Main}" />
         <Setter Property="TextElement.Foreground" Value="{StaticResource Text.Main}" />
-        <!--<Setter Property="TextElement.FontFamily" Value="/Fonts/#JetBrains Mono NL" />-->
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">

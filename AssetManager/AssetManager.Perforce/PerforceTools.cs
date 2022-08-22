@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Perforce.P4;
 
 namespace AssetManager.Perforce
@@ -8,12 +9,9 @@ namespace AssetManager.Perforce
         public static Connection Connection;
         public static Repository Repository;
 
-        public static bool Login(string user, string pass)
+        public static bool Connect(string server, string user, string password = "")
         {
-            return false;
-        }
-        public static bool Connect(string server, string user)
-        {
+            bool connected = false;
             Options options = new Options();
 
             Server p4Server = new Server(new ServerAddress(server));
@@ -22,8 +20,14 @@ namespace AssetManager.Perforce
             Connection = Repository.Connection;
             Connection.UserName = user;
 
+            Connection.Connect(options);
 
-            return Connection.Connect(options);
+            Credential cred = null;
+            if (!string.IsNullOrEmpty(password))
+                cred = Connection.Login(password, null, user);
+
+
+            return connected;
         }
 
         public static void Sync(string depotPath, out IList<FileSpec> syncedFiles)
@@ -74,14 +78,25 @@ namespace AssetManager.Perforce
             Options opts = new Options();
             opts["-s"] = server;
             opts["-u"] = user;
-            var clients = Repository.GetClients(opts);
-            return workspaces;
-        }
 
-        public static void SubmitChangelist(int changelistNo, out SubmitResults results)
-        {
+            Console.WriteLine($"Current Client: {Connection}");
             
-            results = null;
+            IList<Client> clients = null;
+            try
+            {
+               // TODO: fix connection when getting clients...
+                clients = Repository.GetClients(opts);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            foreach (Client client in clients)
+            {
+                workspaces.Add(client.Name);
+            }
+            return workspaces;
         }
     }
 }

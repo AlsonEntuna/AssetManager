@@ -30,16 +30,31 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0" Grid.Column="0">
-                <Button
+            <GroupBox Header="P4">
+                <StackPanel Grid.Row="0" Grid.Column="0">
+                    <GroupBox Header="Workspace">
+                        <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="80"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="Workspace" Grid.Column="0" />
+                                <ComboBox Grid.Column="1"/>
+                            </Grid>
+                            <Button Margin="5"
+                    IsEnabled="{Binding IsConnected, UpdateSourceTrigger=PropertyChanged}"
                     Command="{Binding SyncCommand}"
                     Content="Sync"
                     Style="{StaticResource ButtonStyle.Main}" />
-                <Button
+                        </StackPanel>
+                    </GroupBox>
+                    <Button Margin="5"
                     Command="{Binding OpenRootFolderCommand}"
                     Content="Open Root Folder"
                     Style="{StaticResource ButtonStyle.Main}" />
-            </StackPanel>
+                </StackPanel>
+            </GroupBox>
             <GroupBox Grid.Row="1" Header="Files">
                 <TreeView />
             </GroupBox>

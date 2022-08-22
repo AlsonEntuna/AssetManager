@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace AssetManager.ViewModel
@@ -26,16 +27,25 @@ namespace AssetManager.ViewModel
             set => SetProperty(ref _user, value);
         }
 
-        public ICommand SetupAndConnectCommand => new RelayCommand(SetupAndConnect);
+        private string _password;
+        public string Password
+        {
+            get => _password;
+            set => SetProperty(ref _password, value);
+        }
+
+        public ICommand SetupAndConnectCommand => new RelayCommand<Window>(SetupAndConnect);
         public PerforceLoginViewModel()
         {
 
         }
 
-        private void SetupAndConnect()
+        private void SetupAndConnect(Window window)
         {
             // TODO: Setup perforce connection here....
-            PerforceTools.Connect(Server, User);
+            bool connected = PerforceTools.Connect(Server, User, Password);
+            Console.WriteLine($"Connection result: {connected}");
+            window?.Close();
         }
     }
 }
