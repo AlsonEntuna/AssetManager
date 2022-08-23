@@ -3,6 +3,7 @@ using AssetManager.Perforce;
 using AssetManager.View;
 using AssetManager.Wpf;
 using CommunityToolkit.Mvvm.Input;
+using HelixToolkit.Wpf.SharpDX;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -31,6 +32,8 @@ namespace AssetManager.ViewModel
             get => _isConnected;
             set => SetProperty(ref _isConnected, value);
         }
+
+        public SceneNodeGroupModel3D GroupModel { get; } = new SceneNodeGroupModel3D();
 
         public ICommand SyncCommand => new RelayCommand(Sync);
         public ICommand OpenRootFolderCommand => new RelayCommand(OpenRootFolder);

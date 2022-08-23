@@ -6,6 +6,7 @@
     xmlns:local="clr-namespace:AssetManager"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodels="clr-namespace:AssetManager.ViewModel"
+    xmlns:helix="http://helix-toolkit.org/wpf/SharpDX"
     Title="Asset Manager"
     Background="{StaticResource Main.Background}"
     Width="800"
@@ -62,7 +63,15 @@
                 Grid.Row="0"
                 Grid.RowSpan="2"
                 Grid.Column="1"
-                Header="Preview" />
+                Header="Preview">
+                <Grid>
+                    <helix:Viewport3DX FXAALevel="Low" EnableSwapChainRendering="True" BackgroundColor="#595959">
+                        <helix:AmbientLight3D Color="#363636" />
+                        <helix:Element3DPresenter Content="{Binding GroupModel}" />
+                        <helix:PostEffectMeshBorderHighlight EffectName="highlight" />
+                    </helix:Viewport3DX>
+                </Grid>
+            </GroupBox>
         </Grid>
     </DockPanel>
 </Window>
