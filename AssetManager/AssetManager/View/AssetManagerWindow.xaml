@@ -3,14 +3,14 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helix="http://helix-toolkit.org/wpf/SharpDX"
     xmlns:local="clr-namespace:AssetManager"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodels="clr-namespace:AssetManager.ViewModel"
-    xmlns:helix="http://helix-toolkit.org/wpf/SharpDX"
     Title="Asset Manager"
-    Background="{StaticResource Main.Background}"
     Width="800"
     Height="850"
+    Background="{StaticResource Main.Background}"
     ResizeMode="CanResizeWithGrip"
     mc:Ignorable="d">
     <Window.DataContext>
@@ -31,41 +31,83 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <GroupBox Header="P4">
+            <GroupBox Header="P4" Style="{StaticResource GroupBox.Main}">
                 <StackPanel Grid.Row="0" Grid.Column="0">
                     <GroupBox Header="Workspace">
                         <StackPanel>
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="80"/>
-                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="80" />
+                                    <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock VerticalAlignment="Center" Text="Workspace" Grid.Column="0" />
-                                <ComboBox Grid.Column="1"/>
+                                <TextBlock
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Text="Workspace" />
+                                <ComboBox Grid.Column="1" />
                             </Grid>
-                            <Button Margin="5"
-                    IsEnabled="{Binding IsConnected, UpdateSourceTrigger=PropertyChanged}"
-                    Command="{Binding SyncCommand}"
-                    Content="Sync"
-                    Style="{StaticResource ButtonStyle.Main}" />
+                            <Button
+                                Margin="5"
+                                Command="{Binding SyncCommand}"
+                                Content="Sync"
+                                IsEnabled="{Binding IsConnected, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource ButtonStyle.Main}" />
                         </StackPanel>
                     </GroupBox>
-                    <Button Margin="5"
-                    Command="{Binding OpenRootFolderCommand}"
-                    Content="Open Root Folder"
-                    Style="{StaticResource ButtonStyle.Main}" />
+                    <Button
+                        Margin="5"
+                        Command="{Binding OpenRootFolderCommand}"
+                        Content="Open Root Folder"
+                        Style="{StaticResource ButtonStyle.Main}" />
                 </StackPanel>
             </GroupBox>
-            <GroupBox Grid.Row="1" Header="Files">
-                <TreeView />
+            <GroupBox
+                Grid.Row="1"
+                Header="Files"
+                Style="{StaticResource GroupBox.Main}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="80" />
+                        </Grid.ColumnDefinitions>
+                        <Button
+                            Grid.Column="1"
+                            Height="30"
+                            Content="Search"
+                            Style="{StaticResource ButtonStyle.Main}" />
+                        <TextBox Grid.Column="0" VerticalContentAlignment="Center" />
+                    </Grid>
+                    <TreeView Grid.Row="1" />
+                </Grid>
+
             </GroupBox>
             <GroupBox
                 Grid.Row="0"
                 Grid.RowSpan="2"
                 Grid.Column="1"
-                Header="Preview">
+                Header="Preview"
+                Style="{StaticResource GroupBox.Main}">
                 <Grid>
-                    <helix:Viewport3DX FXAALevel="Low" EnableSwapChainRendering="True" BackgroundColor="#595959">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Button
+                        Grid.Row="0"
+                        Content="Preview"
+                        Style="{StaticResource ButtonStyle.Main}" />
+                    <helix:Viewport3DX
+                        Grid.Row="1"
+                        Margin="0,10,0,0"
+                        BackgroundColor="#595959"
+                        EnableSwapChainRendering="True"
+                        FXAALevel="Low"
+                        IsEnabled="False">
                         <helix:AmbientLight3D Color="#363636" />
                         <helix:Element3DPresenter Content="{Binding GroupModel}" />
                         <helix:PostEffectMeshBorderHighlight EffectName="highlight" />

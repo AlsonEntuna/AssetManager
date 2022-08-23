@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="Brushes.xaml"/>
+        <ResourceDictionary Source="Brushes.xaml" />
     </ResourceDictionary.MergedDictionaries>
     <!--  Button Styles  -->
     <Style x:Key="ButtonStyle.Main" TargetType="Button">
@@ -15,7 +15,7 @@
                         Width="auto"
                         Height="{TemplateBinding Height}"
                         Background="{TemplateBinding Background}"
-                        CornerRadius="10"
+                        CornerRadius="3"
                         TextBlock.Foreground="{TemplateBinding Foreground}">
 
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -28,5 +28,8 @@
                 <Setter Property="Background" Value="{StaticResource Button.Alt}" />
             </Trigger>
         </Style.Triggers>
+    </Style>
+    <Style x:Key="GroupBox.Main" TargetType="GroupBox">
+        <Setter Property="TextElement.Foreground" Value="{StaticResource Text.Main}" />
     </Style>
 </ResourceDictionary>
