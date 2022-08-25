@@ -6,16 +6,24 @@
     xmlns:local="clr-namespace:AssetManager.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodel="clr-namespace:AssetManager.ViewModel"
-    Title="Perforce Setup"
     x:Name="RootWindow"
+    Title="Perforce Setup"
     Width="600"
     Height="450"
-    d:DataContext="{d:DesignInstance viewmodel:PerforceLoginViewModel, IsDesignTimeCreatable=True}"
+    d:DataContext="{d:DesignInstance viewmodel:PerforceLoginViewModel,
+                                     IsDesignTimeCreatable=True}"
+    Background="{StaticResource Main.Background}"
     SizeToContent="Height"
     mc:Ignorable="d">
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource Text.Main}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+    </Window.Resources>
     <Grid Margin="5">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="80" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -28,26 +36,38 @@
             Grid.Row="0"
             Grid.Column="0"
             Text="Server: " />
-        <TextBox VerticalContentAlignment="Center" Text="{Binding Server, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="0" Grid.Column="1" />
+        <TextBox
+            Grid.Row="0"
+            Grid.Column="1"
+            VerticalContentAlignment="Center"
+            Text="{Binding Server, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
         <TextBlock
             Grid.Row="1"
             Grid.Column="0"
             Text="User:" />
-        <TextBox Text="{Binding User, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="1" />
+        <TextBox
+            Grid.Row="1"
+            Grid.Column="1"
+            VerticalContentAlignment="Center"
+            Text="{Binding User, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
         <TextBlock
             Grid.Row="2"
             Grid.Column="0"
-            Text="User:" />
-        <TextBox Text="{Binding Password, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="1" />
+            Text="Password:" />
+        <PasswordBox
+            Grid.Row="2"
+            Grid.Column="1"
+            VerticalContentAlignment="Center"
+            PasswordChanged="PasswordBox_PasswordChanged" />
 
         <Button
             Grid.Row="3"
-            Height="35"
             Grid.Column="0"
             Grid.ColumnSpan="2"
-            Content="Setup and Connect"
+            Height="35"
             Command="{Binding SetupAndConnectCommand}"
             CommandParameter="{Binding ElementName=RootWindow}"
+            Content="Setup and Connect"
             Style="{StaticResource ButtonStyle.Main}" />
     </Grid>
 </Window>

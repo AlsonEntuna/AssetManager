@@ -44,8 +44,16 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Text="Workspace" />
-                                <ComboBox Grid.Column="1" />
+                                <ComboBox
+                                    x:Name="Combo_Clients"
+                                    Grid.Column="1"
+                                    ItemsSource="{Binding Workspaces, UpdateSourceTrigger=PropertyChanged}"
+                                    SelectedIndex="0"
+                                    SelectionChanged="Combo_Clients_SelectionChanged" />
                             </Grid>
+                            <GroupBox Header="Depot Path">
+                                <TextBox />
+                            </GroupBox>
                             <Button
                                 Margin="5"
                                 Command="{Binding SyncCommand}"
@@ -105,10 +113,15 @@
                         Grid.Row="1"
                         Margin="0,10,0,0"
                         BackgroundColor="#595959"
+                        Camera="{Binding Camera}"
+                        EffectsManager="{Binding EffectsManager}"
                         EnableSwapChainRendering="True"
                         FXAALevel="Low"
-                        IsEnabled="False">
+                        FixedRotationPoint="{Binding ModelCentroid}"
+                        FixedRotationPointEnabled="True">
                         <helix:AmbientLight3D Color="#363636" />
+                        <helix:DirectionalLight3D Direction="{Binding Camera.LookDirection}" Color="#D6D6D6" />
+                        <helix:EnvironmentMap3D IsRendering="{Binding RenderEnvironmentMap}" Texture="{Binding EnvironmentMap}" />
                         <helix:Element3DPresenter Content="{Binding GroupModel}" />
                         <helix:PostEffectMeshBorderHighlight EffectName="highlight" />
                     </helix:Viewport3DX>

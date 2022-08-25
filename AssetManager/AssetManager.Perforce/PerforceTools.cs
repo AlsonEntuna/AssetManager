@@ -11,7 +11,6 @@ namespace AssetManager.Perforce
 
         public static bool Connect(string server, string user, string password = "")
         {
-            bool connected = false;
             Options options = new Options();
 
             Server p4Server = new Server(new ServerAddress(server));
@@ -20,13 +19,15 @@ namespace AssetManager.Perforce
             Connection = Repository.Connection;
             Connection.UserName = user;
 
-            Connection.Connect(options);
+            bool connected = Connection.Connect(options);
 
-            Credential cred = null;
             if (!string.IsNullOrEmpty(password))
-                cred = Connection.Login(password, null, user);
-
-
+            {
+                Credential cred = Connection.Login(password, null, null);
+                if (cred != null)
+                    Connection.Credential = cred;
+            }
+   
             return connected;
         }
 
@@ -75,27 +76,22 @@ namespace AssetManager.Perforce
             {
                 server = Connection.Server.Address.Uri;
             }
-            Options opts = new Options();
-            opts["-s"] = server;
-            opts["-u"] = user;
-
-            Console.WriteLine($"Current Client: {Connection}");
+            ClientsCmdOptions opts = new ClientsCmdOptions(ClientsCmdFlags.None, user, null, 0, null);
             
             IList<Client> clients = null;
             try
             {
-               // TODO: fix connection when getting clients...
                 clients = Repository.GetClients(opts);
+                foreach (Client client in clients)
+                {
+                    workspaces.Add(client.Name);
+                }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
             }
 
-            foreach (Client client in clients)
-            {
-                workspaces.Add(client.Name);
-            }
             return workspaces;
         }
     }

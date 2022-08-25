@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AssetManager.Perforce;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace AssetManager.View
 {
@@ -23,6 +12,12 @@ namespace AssetManager.View
         public AssetManagerWindow()
         {
             InitializeComponent();
+        }
+
+        private void Combo_Clients_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string selectedWorkspace = ((ComboBox)sender).SelectedItem as string;
+            PerforceTools.Connection.SetClient(selectedWorkspace);
         }
     }
 }

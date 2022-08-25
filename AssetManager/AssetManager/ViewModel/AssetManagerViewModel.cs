@@ -4,9 +4,19 @@ using AssetManager.View;
 using AssetManager.Wpf;
 using CommunityToolkit.Mvvm.Input;
 using HelixToolkit.Wpf.SharpDX;
+using HelixToolkit.Wpf.SharpDX.Model.Scene;
+using HelixToolkit.Wpf.SharpDX.Model;
+using SharpDX;
+using SharpDX.Direct2D1.Effects;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using System.Windows.Media.Media3D;
+using Camera = HelixToolkit.Wpf.SharpDX.Camera;
+using OrthographicCamera = HelixToolkit.Wpf.SharpDX.OrthographicCamera;
+using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
+using HelixToolkit.Wpf.SharpDX.Assimp;
+using System.Threading;
 
 namespace AssetManager.ViewModel
 {
@@ -33,14 +43,98 @@ namespace AssetManager.ViewModel
             set => SetProperty(ref _isConnected, value);
         }
 
-        public SceneNodeGroupModel3D GroupModel { get; } = new SceneNodeGroupModel3D();
+        #region HelixComponents
+        public const string Orthographic = "Orthographic Camera";
+        public const string Perspective = "Perspective Camera";
 
+        private string _cameraModel;
+        public string CameraModel
+        {
+            get => _cameraModel;
+            set
+            {
+                SetProperty(ref _cameraModel, value);
+
+            }
+        }
+        private Camera _camera;
+        public Camera Camera
+        {
+            get => _camera;
+            set
+            {
+                SetProperty(ref _camera, value);
+                CameraModel = _camera is PerspectiveCamera
+                                ? Perspective 
+                                : _camera is OrthographicCamera ? Orthographic : null;
+            }
+        }
+
+        private IEffectsManager _effectsManager;
+        public IEffectsManager EffectsManager
+        {
+            get => _effectsManager;
+            set => SetProperty(ref _effectsManager, value);
+        }
+
+        private Point3D _modelCentroid = default;
+        public Point3D ModelCentroid
+        {
+            get => _modelCentroid;
+            private set => SetProperty(ref _modelCentroid, value);
+        }
+
+        private BoundingBox _modelBound = new BoundingBox();
+        public BoundingBox ModelBound
+        {
+            get => _modelBound;
+            private set => SetProperty(ref _modelBound, value);
+        }
+
+        private HelixToolkitScene scene;
+        private SynchronizationContext context = SynchronizationContext.Current;
+        public SceneNodeGroupModel3D GroupModel { get; } = new SceneNodeGroupModel3D();
+        public TextureModel EnvironmentMap { get; private set; }
+
+        private bool _renderEnvironmentMap = false;
+        public bool RenderEnvironmentMap
+        {
+            get => _renderEnvironmentMap;
+            set
+            {
+                SetProperty(ref _renderEnvironmentMap, value);
+                if (_renderEnvironmentMap && scene != null && scene.Root != null)
+                {
+                    foreach (var node in scene.Root.Traverse())
+                    {
+                        if (node is MaterialGeometryNode m && m.Material is PBRMaterialCore material)
+                        {
+                            material.RenderEnvironmentMap = value;
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region Commands
         public ICommand SyncCommand => new RelayCommand(Sync);
         public ICommand OpenRootFolderCommand => new RelayCommand(OpenRootFolder);
         public ICommand PerforceSetupCommand => new RelayCommand(PerforceLoginAndSetup);
+        #endregion
+
         public AssetManagerViewModel()
         {
-
+            EffectsManager = new EffectsManager();
+            Camera = new OrthographicCamera()
+            {
+                LookDirection = new Vector3D(0, -10, -10),
+                Position = new Point3D(0, 10, 10),
+                UpDirection = new Vector3D(0, 1, 0),
+                FarPlaneDistance = 5000,
+                NearPlaneDistance = 0.1f
+            };
+            EnvironmentMap = TextureModel.Create("Resources/Cubemap_Grandcanyon.dds");
         }
 
         private void Sync()
@@ -50,7 +144,7 @@ namespace AssetManager.ViewModel
 
         private void OpenRootFolder()
         {
-
+            
         }
 
         private void SetupPerforceDependencies()
