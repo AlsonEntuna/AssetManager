@@ -18,6 +18,9 @@
     </Window.DataContext>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File">
+                <MenuItem Command="{Binding LoadFileCommand}" Header="Load File" />
+            </MenuItem>
             <MenuItem Header="Options">
                 <MenuItem Command="{Binding PerforceSetupCommand}" Header="Perforce Setup" />
             </MenuItem>
@@ -102,13 +105,18 @@
                 Style="{StaticResource GroupBox.Main}">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="30" />
+                        <RowDefinition Height="auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <Button
-                        Grid.Row="0"
-                        Content="Preview"
-                        Style="{StaticResource ButtonStyle.Main}" />
+                    <StackPanel Grid.Row="0">
+                        <Button Content="Preview" Style="{StaticResource ButtonStyle.Main}" />
+                        <GroupBox Header="Renderer Settings">
+                            <CheckBox
+                                Content="Render Env Map"
+                                Foreground="White"
+                                IsChecked="{Binding RenderEnvironmentMap, UpdateSourceTrigger=PropertyChanged}" />
+                        </GroupBox>
+                    </StackPanel>
                     <helix:Viewport3DX
                         Grid.Row="1"
                         Margin="0,10,0,0"
@@ -119,6 +127,18 @@
                         FXAALevel="Low"
                         FixedRotationPoint="{Binding ModelCentroid}"
                         FixedRotationPointEnabled="True">
+                        <helix:Viewport3DX.InputBindings>
+                            <KeyBinding Key="B" Command="helix:ViewportCommands.BackView" />
+                            <KeyBinding Key="F" Command="helix:ViewportCommands.FrontView" />
+                            <KeyBinding Key="U" Command="helix:ViewportCommands.TopView" />
+                            <KeyBinding Key="D" Command="helix:ViewportCommands.BottomView" />
+                            <KeyBinding Key="L" Command="helix:ViewportCommands.LeftView" />
+                            <KeyBinding Key="R" Command="helix:ViewportCommands.RightView" />
+                            <KeyBinding Command="helix:ViewportCommands.ZoomExtents" Gesture="Control+E" />
+                            <MouseBinding Command="helix:ViewportCommands.Rotate" Gesture="RightClick" />
+                            <MouseBinding Command="helix:ViewportCommands.Zoom" Gesture="MiddleClick" />
+                            <MouseBinding Command="helix:ViewportCommands.Pan" Gesture="LeftClick" />
+                        </helix:Viewport3DX.InputBindings>
                         <helix:AmbientLight3D Color="#363636" />
                         <helix:DirectionalLight3D Direction="{Binding Camera.LookDirection}" Color="#D6D6D6" />
                         <helix:EnvironmentMap3D IsRendering="{Binding RenderEnvironmentMap}" Texture="{Binding EnvironmentMap}" />
