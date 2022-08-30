@@ -22,10 +22,11 @@ using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using System.Threading.Tasks;
 using Microsoft.Win32;
 using System.Windows;
+using System;
 
 namespace AssetManager.ViewModel
 {
-    class AssetManagerViewModel : ViewModelBase
+    class AssetManagerViewModel : ViewModelBase, IDisposable
     {
         private string OpenFileFilter = $"{HelixToolkit.Wpf.SharpDX.Assimp.Importer.SupportedFormatsString}";
         private string ExportFileFilter = $"{HelixToolkit.Wpf.SharpDX.Assimp.Exporter.SupportedFormatsString}";
@@ -145,6 +146,11 @@ namespace AssetManager.ViewModel
                 NearPlaneDistance = 0.1f
             };
             EnvironmentMap = TextureModel.Create("Resources/Cubemap_Grandcanyon.dds");
+        }
+
+        ~AssetManagerViewModel()
+        {
+            Dispose();
         }
 
         private void Sync()
@@ -277,5 +283,22 @@ namespace AssetManager.ViewModel
                 }
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
+
+        #region Dispose
+        private bool _disposingValue = false;
+        public void Dispose()
+        {
+            if (!_disposingValue)
+            {
+                if (EffectsManager != null)
+                {
+                    var effectManager = EffectsManager as IDisposable;
+                    Disposer.RemoveAndDispose(ref effectManager);
+                }
+                _disposingValue = true;
+                GC.SuppressFinalize(this);
+            }
+        }
+        #endregion
     }
 }

@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodels="clr-namespace:AssetManager.ViewModel"
     Title="Asset Manager"
-    Width="800"
+    Width="1000"
     Height="850"
     Background="{StaticResource Main.Background}"
     ResizeMode="CanResizeWithGrip"
