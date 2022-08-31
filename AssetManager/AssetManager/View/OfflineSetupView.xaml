@@ -1,0 +1,47 @@
+﻿<Window
+    x:Class="AssetManager.View.OfflineSetupView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:AssetManager.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Offline Setup"
+    Width="500"
+    d:Height="300"
+    Background="{StaticResource Main.Background}"
+    ResizeMode="NoResize"
+    SizeToContent="Height"
+    mc:Ignorable="d">
+    <Grid>
+        <StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="60" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource TextBlock.Main}"
+                    Text="Folder Path: " />
+                <TextBox
+                    x:Name="Txt_FolderPath"
+                    Grid.Column="1"
+                    VerticalContentAlignment="Center" />
+                <Button
+                    x:Name="Btn_Browse"
+                    Grid.Column="2"
+                    Click="Btn_Browse_Click"
+                    Content="browse"
+                    Style="{StaticResource ButtonStyle.Main}" />
+            </Grid>
+            <Button
+                x:Name="Btn_Done"
+                Height="40"
+                Click="Btn_Done_Click"
+                Content="Done"
+                Style="{StaticResource ButtonStyle.Main}" />
+        </StackPanel>
+    </Grid>
+</Window>

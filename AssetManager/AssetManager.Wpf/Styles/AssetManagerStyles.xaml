@@ -29,6 +29,13 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+
+    <!--  TextBlock  -->
+    <Style x:Key="TextBlock.Main" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource Text.Main}" />
+    </Style>
+
+    <!--  GroupBox  -->
     <Style x:Key="GroupBox.Main" TargetType="GroupBox">
         <Setter Property="TextElement.Foreground" Value="{StaticResource Text.Main}" />
     </Style>

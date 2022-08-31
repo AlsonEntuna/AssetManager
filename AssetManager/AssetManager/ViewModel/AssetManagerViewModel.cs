@@ -35,6 +35,9 @@ namespace AssetManager.ViewModel
             set => SetProperty(ref _objectDisplay, value);
         }
 
+        private ObjectsHandler _objHandler;
+
+        #region P4Connection
         private ObservableCollection<string> _workspaces;
         public ObservableCollection<string> Workspaces
         {
@@ -48,6 +51,7 @@ namespace AssetManager.ViewModel
             get => _isConnected;
             set => SetProperty(ref _isConnected, value);
         }
+        #endregion
 
         #region HelixComponents
         private string OpenFileFilter = $"{HelixToolkit.Wpf.SharpDX.Assimp.Importer.SupportedFormatsString}";
@@ -142,20 +146,24 @@ namespace AssetManager.ViewModel
         public ICommand PerforceSetupCommand => new RelayCommand(PerforceLoginAndSetup);
         public ICommand LoadFileCommand => new RelayCommand<string>(LoadFile);
         public ICommand ResetCameraCommand => new RelayCommand(ResetCamera);
+        public ICommand SetupOfflineModeCommand => new RelayCommand(SetupOfflineMode);
         #endregion
 
         public AssetManagerViewModel()
         {
+            _objHandler = new ObjectsHandler();
+
+            // Initializing the Helix components and dependencies
             EffectsManager = new DefaultEffectsManager();
             Camera = new PerspectiveCamera()
             {
                 LookDirection = new Vector3D(0, -10, -10),
                 Position = new Point3D(0, 10, 10),
                 UpDirection = new Vector3D(0, 1, 0),
-                FarPlaneDistance = 10000,
+                FarPlaneDistance = 100000,
                 NearPlaneDistance = 0.1f
             };
-            EnvironmentMap = TextureModel.Create("Resources/Cubemap_Grandcanyon.dds");
+            EnvironmentMap = TextureModel.Create("Resources/cubemap_default.dds");
         }
 
         ~AssetManagerViewModel()
@@ -295,6 +303,16 @@ namespace AssetManager.ViewModel
             (Camera as PerspectiveCamera).Reset();
             (Camera as PerspectiveCamera).FarPlaneDistance = 5000;
             (Camera as PerspectiveCamera).NearPlaneDistance = 0.1f;
+        }
+
+        private void SetupOfflineMode()
+        {
+            OfflineSetupView window = new OfflineSetupView();
+            window.ShowDialog();
+            if (window.DialogResult == true)
+            {
+
+            }
         }
 
         #region Dispose

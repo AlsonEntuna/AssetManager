@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 
 namespace AssetManager.Data
 {
-    internal enum ObjType
+    internal enum EObjType
     {
-        EFbx,
-        EObj,
-    }
-
-    internal class ObjectTypes
-    {
+        Fbx,
+        Obj,
+        Maya,
+        Max,
+        Blender
     }
 }

@@ -107,6 +107,7 @@
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -126,10 +127,15 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Data\ObjectDisplayWrapper.cs" />
+    <Compile Include="Data\ObjectsHandler.cs" />
     <Compile Include="Data\ObjectTypes.cs" />
+    <Compile Include="Settings\AssetManagerSettings.cs" />
     <Compile Include="Utils\JsonUtils.cs" />
     <Compile Include="Utils\Utils.cs" />
     <Compile Include="ViewModel\PerforceLoginViewModel.cs" />
+    <Compile Include="View\OfflineSetupView.xaml.cs">
+      <DependentUpon>OfflineSetupView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\PerforceLoginSetup.xaml.cs">
       <DependentUpon>PerforceLoginSetup.xaml</DependentUpon>
     </Compile>
@@ -146,6 +152,10 @@
       <DependentUpon>AssetManagerWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\OfflineSetupView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\PerforceLoginSetup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -189,6 +199,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\cubemap_default.dds">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Cubemap_Grandcanyon.dds">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
