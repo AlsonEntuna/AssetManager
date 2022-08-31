@@ -28,9 +28,6 @@ namespace AssetManager.ViewModel
 {
     class AssetManagerViewModel : ViewModelBase, IDisposable
     {
-        private string OpenFileFilter = $"{HelixToolkit.Wpf.SharpDX.Assimp.Importer.SupportedFormatsString}";
-        private string ExportFileFilter = $"{HelixToolkit.Wpf.SharpDX.Assimp.Exporter.SupportedFormatsString}";
-
         private ObservableCollection<ObjectDisplayWrapper> _objectDisplay;
         public ObservableCollection<ObjectDisplayWrapper> ObjectDisplay
         { 
@@ -53,6 +50,9 @@ namespace AssetManager.ViewModel
         }
 
         #region HelixComponents
+        private string OpenFileFilter = $"{HelixToolkit.Wpf.SharpDX.Assimp.Importer.SupportedFormatsString}";
+        private string ExportFileFilter = $"{HelixToolkit.Wpf.SharpDX.Assimp.Exporter.SupportedFormatsString}";
+
         public const string Orthographic = "Orthographic Camera";
         public const string Perspective = "Perspective Camera";
 
@@ -100,11 +100,12 @@ namespace AssetManager.ViewModel
             private set => SetProperty(ref _modelBound, value);
         }
 
-        private HelixToolkitScene scene;
-        private SynchronizationContext context = SynchronizationContext.Current;
-        public SceneNodeGroupModel3D GroupModel { get; } = new SceneNodeGroupModel3D();
-
-        public TextureModel EnvironmentMap { get; private set; }
+        private bool _isLoading;
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set => SetProperty(ref _isLoading, value);
+        }
 
         private bool _renderEnvironmentMap = true;
         public bool RenderEnvironmentMap
@@ -125,24 +126,33 @@ namespace AssetManager.ViewModel
                 }
             }
         }
+
+        private HelixToolkitScene scene;
+        private SynchronizationContext context = SynchronizationContext.Current;
+        public SceneNodeGroupModel3D GroupModel { get; } = new SceneNodeGroupModel3D();
+
+        public TextureModel EnvironmentMap { get; private set; }
+
+        
         #endregion
 
         #region Commands
         public ICommand SyncCommand => new RelayCommand(Sync);
         public ICommand OpenRootFolderCommand => new RelayCommand(OpenRootFolder);
         public ICommand PerforceSetupCommand => new RelayCommand(PerforceLoginAndSetup);
-        public ICommand LoadFileCommand => new RelayCommand(LoadFile);
+        public ICommand LoadFileCommand => new RelayCommand<string>(LoadFile);
+        public ICommand ResetCameraCommand => new RelayCommand(ResetCamera);
         #endregion
 
         public AssetManagerViewModel()
         {
             EffectsManager = new DefaultEffectsManager();
-            Camera = new OrthographicCamera()
+            Camera = new PerspectiveCamera()
             {
                 LookDirection = new Vector3D(0, -10, -10),
                 Position = new Point3D(0, 10, 10),
                 UpDirection = new Vector3D(0, 1, 0),
-                FarPlaneDistance = 5000,
+                FarPlaneDistance = 10000,
                 NearPlaneDistance = 0.1f
             };
             EnvironmentMap = TextureModel.Create("Resources/Cubemap_Grandcanyon.dds");
@@ -196,40 +206,32 @@ namespace AssetManager.ViewModel
             return d.FileName;
         }
 
-        private void LoadFile()
+        private void LoadFile(string filePath = "")
         {
-            //if (isLoading)
-            //{
-            //    return;
-            //}
-            string path = OpenFileDialog(OpenFileFilter);
-            if (path == null)
-            {
+            if (IsLoading)
                 return;
-            }
+
+            string path = "";
+            if (string.IsNullOrEmpty(filePath))
+                path = OpenFileDialog(OpenFileFilter);
+            else
+                path = filePath;
+            
+            if (string.IsNullOrEmpty(path))
+                return;
+
             //StopAnimation();
-            var syncContext = SynchronizationContext.Current;
-            //IsLoading = true;
+            SynchronizationContext syncContext = SynchronizationContext.Current;
+            IsLoading = true;
+
             Task.Run(() =>
             {
                 Importer loader = new Importer();
                 HelixToolkitScene scene = loader.Load(path);
-                //scene.Root.Attach(EffectsManager); // Pre attach scene graph
-                //scene.Root.UpdateAllTransformMatrix();
-                //if (scene.Root.TryGetBound(out var bound))
-                //{
-                //    /// Must use UI thread to set value back.
-                //    syncContext.Post((o) => { ModelBound = bound; }, null);
-                //}
-                //if (scene.Root.TryGetCentroid(out var centroid))
-                //{
-                //    /// Must use UI thread to set value back.
-                //    syncContext.Post((o) => { ModelCentroid = centroid.ToPoint3D(); }, null);
-                //}
                 return scene;
             }).ContinueWith((result) =>
             {
-                //IsLoading = false;
+                IsLoading = false;
                 if (result.IsCompleted)
                 {
                     scene = result.Result;
@@ -238,18 +240,21 @@ namespace AssetManager.ViewModel
                     GroupModel.Clear();
                     Task.Run(() =>
                     {
-                        foreach (var node in oldNode)
-                        { node.Dispose(); }
+                        foreach (SceneNode node in oldNode)
+                        { 
+                            node.Dispose(); 
+                        }
                     });
+
                     if (scene != null)
                     {
                         if (scene.Root != null)
                         {
-                            foreach (var node in scene.Root.Traverse())
+                            foreach (SceneNode node in scene.Root.Traverse())
                             {
                                 if (node is MaterialGeometryNode m)
                                 {
-                                    //m.Geometry.SetAsTransient();
+                                    m.Geometry.SetAsTransient();
                                     if (m.Material is PBRMaterialCore pbr)
                                     {
                                         pbr.RenderEnvironmentMap = RenderEnvironmentMap;
@@ -261,6 +266,7 @@ namespace AssetManager.ViewModel
                                 }
                             }
                         }
+
                         GroupModel.AddNode(scene.Root);
                         //if (scene.HasAnimation)
                         //{
@@ -282,6 +288,13 @@ namespace AssetManager.ViewModel
                     MessageBox.Show(result.Exception.Message);
                 }
             }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        private void ResetCamera()
+        {
+            (Camera as PerspectiveCamera).Reset();
+            (Camera as PerspectiveCamera).FarPlaneDistance = 5000;
+            (Camera as PerspectiveCamera).NearPlaneDistance = 0.1f;
         }
 
         #region Dispose
