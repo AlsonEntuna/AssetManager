@@ -8,6 +8,7 @@ namespace AssetManager.Data
 {
     internal enum EObjType
     {
+        Unknown,
         Fbx,
         Obj,
         Maya,

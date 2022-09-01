@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodels="clr-namespace:AssetManager.ViewModel"
     Title="Asset Manager"
-    Width="1080"
+    Width="1500"
     Height="850"
     Background="{StaticResource Main.Background}"
     ResizeMode="CanResizeWithGrip"
@@ -29,7 +29,8 @@
         </Menu>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300" />
+                <ColumnDefinition Width="400" />
+                <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -140,7 +141,8 @@
                         Background="{StaticResource Main.Background}"
                         CanUserAddRows="False"
                         EnableRowVirtualization="True"
-                        ItemsSource="{Binding ObjectDisplay}">
+                        ItemsSource="{Binding ObjectDisplay, UpdateSourceTrigger=PropertyChanged}"
+                        VerticalScrollBarVisibility="Auto">
                         <DataGrid.Columns>
                             <DataGridTextColumn Binding="{Binding Name}" Header="Name" />
                             <DataGridTextColumn Binding="{Binding Type}" Header="Type" />
@@ -149,10 +151,20 @@
                     </DataGrid>
                 </Grid>
             </Grid>
+            <GridSplitter
+                Grid.Row="0"
+                Grid.RowSpan="2"
+                Grid.Column="1"
+                Width="3"
+                Margin="2,0,2,0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Stretch"
+                Background="White" />
+
             <Grid
                 Grid.Row="0"
                 Grid.RowSpan="2"
-                Grid.Column="1">
+                Grid.Column="2">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
@@ -190,9 +202,9 @@
                             <KeyBinding Key="L" Command="helix:ViewportCommands.LeftView" />
                             <KeyBinding Key="R" Command="helix:ViewportCommands.RightView" />
                             <KeyBinding Command="helix:ViewportCommands.ZoomExtents" Gesture="Control+E" />
-                            <MouseBinding Command="helix:ViewportCommands.Rotate" Gesture="RightClick" />
+                            <MouseBinding Command="helix:ViewportCommands.Rotate" Gesture="LeftClick" />
                             <MouseBinding Command="helix:ViewportCommands.Zoom" Gesture="MiddleClick" />
-                            <MouseBinding Command="helix:ViewportCommands.Pan" Gesture="LeftClick" />
+                            <MouseBinding Command="helix:ViewportCommands.Pan" Gesture="RightClick" />
                         </helix:Viewport3DX.InputBindings>
                         <helix:AmbientLight3D Color="#363636" />
                         <helix:DirectionalLight3D Direction="{Binding Camera.LookDirection}" Color="#D6D6D6" />

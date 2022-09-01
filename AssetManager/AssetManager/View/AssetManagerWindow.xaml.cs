@@ -1,5 +1,7 @@
 ﻿using AssetManager.Data;
 using AssetManager.Perforce;
+using AssetManager.Settings;
+using AssetManager.ViewModel;
 using System;
 using System.Linq;
 using System.Windows;
@@ -12,9 +14,12 @@ namespace AssetManager.View
     /// </summary>
     public partial class AssetManagerWindow : Window
     {
+        private readonly AssetManagerViewModel _vm;
         public AssetManagerWindow()
         {
             InitializeComponent();
+            _vm = DataContext as AssetManagerViewModel;
+            _vm.Dispatcher = Dispatcher;
             Combo_ObjType.ItemsSource = Enum.GetValues(typeof(EObjType)).Cast<EObjType>();
         }
 

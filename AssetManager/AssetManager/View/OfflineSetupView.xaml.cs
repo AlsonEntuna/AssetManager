@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AssetManager.Settings;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,11 +25,12 @@ namespace AssetManager.View
         public OfflineSetupView()
         {
             InitializeComponent();
+            Txt_FolderPath.Text = AssetManagerSettings.Instance.FolderPath;
         }
 
         private void Btn_Browse_Click(object sender, RoutedEventArgs e)
         {
-            using (FolderBrowserDialog fd = new FolderBrowserDialog() { Description = "Select Folder Path", ShowNewFolderButton = true, SelectedPath = "C:\\" })
+            using (FolderBrowserDialog fd = new FolderBrowserDialog() { Description = "Select Folder Path", ShowNewFolderButton = true, SelectedPath = AssetManagerSettings.Instance.FolderPath })
             {
                 if (fd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     Txt_FolderPath.Text = fd.SelectedPath;

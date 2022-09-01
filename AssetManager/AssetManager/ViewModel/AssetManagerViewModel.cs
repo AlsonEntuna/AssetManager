@@ -23,6 +23,11 @@ using System.Threading.Tasks;
 using Microsoft.Win32;
 using System.Windows;
 using System;
+using AssetManager.Settings;
+using System.IO;
+using AssetManager.Utils;
+using System.Diagnostics;
+using System.Windows.Threading;
 
 namespace AssetManager.ViewModel
 {
@@ -36,6 +41,7 @@ namespace AssetManager.ViewModel
         }
 
         private ObjectsHandler _objHandler;
+        public Dispatcher Dispatcher { get; set; }
 
         #region P4Connection
         private ObservableCollection<string> _workspaces;
@@ -151,6 +157,16 @@ namespace AssetManager.ViewModel
 
         public AssetManagerViewModel()
         {
+            // Check for Settings if it's present
+            if (File.Exists(AssetManagerSettings.Instance.SettingsSavePath))
+            {
+                AssetManagerSettings settings = JsonUtils.Deserialize<AssetManagerSettings>(AssetManagerSettings.Instance.SettingsSavePath);
+                AssetManagerSettings.Instance.FolderPath = settings.FolderPath;
+            }
+
+            // Initialize the list of Objects
+            ObjectDisplay = new ObservableCollection<ObjectDisplayWrapper>();
+            // Initialize the ObjectHandler
             _objHandler = new ObjectsHandler();
 
             // Initializing the Helix components and dependencies
@@ -158,7 +174,7 @@ namespace AssetManager.ViewModel
             Camera = new PerspectiveCamera()
             {
                 LookDirection = new Vector3D(0, -10, -10),
-                Position = new Point3D(0, 10, 10),
+                Position = new Point3D(0, 0, 0),
                 UpDirection = new Vector3D(0, 1, 0),
                 FarPlaneDistance = 100000,
                 NearPlaneDistance = 0.1f
@@ -178,7 +194,7 @@ namespace AssetManager.ViewModel
 
         private void OpenRootFolder()
         {
-            
+            Process.Start(AssetManagerSettings.Instance.FolderPath);
         }
 
         private void SetupPerforceDependencies()
@@ -228,6 +244,7 @@ namespace AssetManager.ViewModel
             if (string.IsNullOrEmpty(path))
                 return;
 
+            // TODO: support for animation
             //StopAnimation();
             SynchronizationContext syncContext = SynchronizationContext.Current;
             IsLoading = true;
@@ -236,6 +253,8 @@ namespace AssetManager.ViewModel
             {
                 Importer loader = new Importer();
                 HelixToolkitScene scene = loader.Load(path);
+                scene.Root.Attach(EffectsManager);
+                scene.Root.UpdateAllTransformMatrix();
                 return scene;
             }).ContinueWith((result) =>
             {
@@ -305,13 +324,61 @@ namespace AssetManager.ViewModel
             (Camera as PerspectiveCamera).NearPlaneDistance = 0.1f;
         }
 
+        private static readonly object padlock = new object();
+        private void BuildAssetDirectory(string folderPath)
+        {
+            if (!Directory.Exists(folderPath))
+            {
+                return;
+            }
+
+            DirectoryInfo dirInfo = new DirectoryInfo(folderPath);
+            FileInfo[] files = dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly);
+            IsLoading = true;
+            Thread processThread = new Thread(() =>
+            {
+                foreach (var dir in dirInfo.GetDirectories())
+                {
+                    try
+                    {
+                        foreach (var file in dir.GetFiles())
+                        {
+                            _objHandler.GenerateObjectWrapper(file.FullName);
+                        }
+                        BuildAssetDirectory(dir.FullName);
+                    }
+                    catch (UnauthorizedAccessException e)
+                    {
+                        continue;
+                    }
+                }
+                //Action action = () => OnProcessObjThreadDone();
+                //Dispatcher.BeginInvoke(action);
+            })
+            {
+                IsBackground = true
+            };
+            processThread.Start();
+            processThread.Join();
+            OnProcessObjThreadDone();
+            
+        }
+
+        private void OnProcessObjThreadDone() 
+        {
+            IsLoading = false;
+            ObjectDisplay = _objHandler.Objects;
+        }
+
         private void SetupOfflineMode()
         {
             OfflineSetupView window = new OfflineSetupView();
             window.ShowDialog();
             if (window.DialogResult == true)
             {
-
+                AssetManagerSettings.Instance.FolderPath = window.FolderPath;
+                AssetManagerSettings.Instance.SaveSettings();
+                BuildAssetDirectory(AssetManagerSettings.Instance.FolderPath);
             }
         }
 
