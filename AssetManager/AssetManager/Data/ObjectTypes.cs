@@ -8,11 +8,13 @@ namespace AssetManager.Data
 {
     internal enum EObjType
     {
+        All,
         Unknown,
         Fbx,
         Obj,
         Maya,
         Max,
-        Blender
+        Blender,
+        Gltf
     }
 }

@@ -113,7 +113,7 @@
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="30" />
+                            <ColumnDefinition Width="50" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <TextBlock
@@ -121,28 +121,63 @@
                             VerticalAlignment="Center"
                             Style="{StaticResource TextBlock.Main}"
                             Text="Type: " />
-                        <ComboBox x:Name="Combo_ObjType" Grid.Column="1" />
+                        <ComboBox
+                            x:Name="Combo_ObjType"
+                            Grid.Column="1"
+                            VerticalContentAlignment="Center"
+                            ItemContainerStyle="{StaticResource ComboBoxItem.Main}"
+                            SelectedItem="{Binding SelectedObjType, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                            SelectionChanged="Combo_ObjType_SelectionChanged" />
                     </Grid>
                     <Grid Grid.Row="1">
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50" />
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="80" />
                         </Grid.ColumnDefinitions>
-                        <Button
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Style="{StaticResource TextBlock.Main}"
+                            Text="Search:" />
+                        <TextBox
+                            x:Name="Txt_Search"
                             Grid.Column="1"
-                            Height="30"
-                            Content="Search"
-                            Style="{StaticResource ButtonStyle.Main}" />
-                        <TextBox Grid.Column="0" VerticalContentAlignment="Center" />
+                            VerticalContentAlignment="Center"
+                            TextChanged="Txt_Search_TextChanged" />
                     </Grid>
                     <DataGrid
+                        x:Name="DataGrid_Objects"
                         Grid.Row="2"
+                        Margin="0,10,0,0"
                         AutoGenerateColumns="False"
                         Background="{StaticResource Main.Background}"
                         CanUserAddRows="False"
                         EnableRowVirtualization="True"
+                        HorizontalScrollBarVisibility="Auto"
                         ItemsSource="{Binding ObjectDisplay, UpdateSourceTrigger=PropertyChanged}"
+                        SelectedItem="{Binding SelectedObj, UpdateSourceTrigger=PropertyChanged}"
                         VerticalScrollBarVisibility="Auto">
+                        <DataGrid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Command="{Binding PreviewCommand}" Header="Preview">
+                                    <MenuItem.Icon>
+                                        <Image Source="{StaticResource Preview}" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Command="{Binding BrowseToPathCommand}" Header="Browse to Path">
+                                    <MenuItem.Icon>
+                                        <Image Source="{StaticResource BrowseFolder}" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="P4">
+                                    <MenuItem Header="Checkout">
+                                        <MenuItem.Icon>
+                                            <Image Source="{StaticResource P4.Checkout}" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Header="Mark for Delete" />
+                                </MenuItem>
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
                         <DataGrid.Columns>
                             <DataGridTextColumn Binding="{Binding Name}" Header="Name" />
                             <DataGridTextColumn Binding="{Binding Type}" Header="Type" />

@@ -1,8 +1,11 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <!--  Colors  -->
     <SolidColorBrush x:Key="Main.Background" Color="#04081a" />
+    <SolidColorBrush x:Key="Brush.Red" Color="#FFBB1010" />
+
     <!--  TextBlock  -->
     <SolidColorBrush x:Key="Text.Main" Color="WhiteSmoke" />
+
     <!--  Button  -->
     <SolidColorBrush x:Key="Button.Main" Color="#142ea6" />
     <SolidColorBrush x:Key="Button.Alt" Color="#0e30c7" />

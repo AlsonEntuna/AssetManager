@@ -40,7 +40,21 @@ namespace AssetManager.ViewModel
             set => SetProperty(ref _objectDisplay, value);
         }
 
-        private ObjectsHandler _objHandler;
+        private ObjectDisplayWrapper _selectedObj;
+        public ObjectDisplayWrapper SelectedObj
+        {
+            get => _selectedObj;
+            set => SetProperty(ref _selectedObj, value);
+        }
+
+        private EObjType _selectedObjType = EObjType.All;
+        public EObjType SelectedObjType
+        {
+            get => _selectedObjType;
+            set => SetProperty(ref _selectedObjType, value);
+        }
+
+        private readonly ObjectsHandler _objHandler;
         public Dispatcher Dispatcher { get; set; }
 
         #region P4Connection
@@ -153,21 +167,24 @@ namespace AssetManager.ViewModel
         public ICommand LoadFileCommand => new RelayCommand<string>(LoadFile);
         public ICommand ResetCameraCommand => new RelayCommand(ResetCamera);
         public ICommand SetupOfflineModeCommand => new RelayCommand(SetupOfflineMode);
+        public ICommand PreviewCommand => new RelayCommand(PreviewObject);
+        public ICommand BrowseToPathCommand => new RelayCommand(BrowseToPath);
         #endregion
 
         public AssetManagerViewModel()
         {
+            // Initialize the list of Objects
+            ObjectDisplay = new ObservableCollection<ObjectDisplayWrapper>();
+            // Initialize the ObjectHandler
+            _objHandler = new ObjectsHandler();
+
             // Check for Settings if it's present
             if (File.Exists(AssetManagerSettings.Instance.SettingsSavePath))
             {
                 AssetManagerSettings settings = JsonUtils.Deserialize<AssetManagerSettings>(AssetManagerSettings.Instance.SettingsSavePath);
                 AssetManagerSettings.Instance.FolderPath = settings.FolderPath;
+                Task.Run(() => { BuildAssetDirectory(AssetManagerSettings.Instance.FolderPath); });
             }
-
-            // Initialize the list of Objects
-            ObjectDisplay = new ObservableCollection<ObjectDisplayWrapper>();
-            // Initialize the ObjectHandler
-            _objHandler = new ObjectsHandler();
 
             // Initializing the Helix components and dependencies
             EffectsManager = new DefaultEffectsManager();
@@ -380,6 +397,21 @@ namespace AssetManager.ViewModel
                 AssetManagerSettings.Instance.SaveSettings();
                 BuildAssetDirectory(AssetManagerSettings.Instance.FolderPath);
             }
+        }
+
+        private void PreviewObject()
+        {
+            if (SelectedObj != null)
+                LoadFile(SelectedObj.Path);
+        }
+
+        private void BrowseToPath()
+        {
+            if (SelectedObj == null)
+                return;
+
+            string dirPath = Path.GetDirectoryName(SelectedObj.Path);
+            Process.Start(dirPath);
         }
 
         #region Dispose
