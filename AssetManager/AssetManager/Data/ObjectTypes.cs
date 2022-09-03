@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AssetManager.Data
+﻿namespace AssetManager.Data
 {
     internal enum EObjType
     {
@@ -15,6 +9,7 @@ namespace AssetManager.Data
         Maya,
         Max,
         Blender,
-        Gltf
+        Gltf,
+        Collada
     }
 }

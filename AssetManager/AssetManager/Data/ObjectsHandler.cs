@@ -29,6 +29,7 @@ namespace AssetManager.Data
                 case ".mb": type = EObjType.Maya; break;
                 case ".max": type = EObjType.Max; break;
                 case ".gltf": type = EObjType.Gltf; break;
+                case ".dae": type = EObjType.Collada; break;
                 default: type = EObjType.Unknown; break;
             }
 
