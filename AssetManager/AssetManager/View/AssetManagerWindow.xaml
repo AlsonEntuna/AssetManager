@@ -81,12 +81,13 @@
                                     <ComboBox
                                         x:Name="Combo_Clients"
                                         Grid.Column="1"
-                                        ItemsSource="{Binding Workspaces, UpdateSourceTrigger=PropertyChanged}"
+                                        ItemsSource="{Binding Workspaces, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                         SelectedIndex="0"
+                                        SelectedItem="{Binding Client, UpdateSourceTrigger=PropertyChanged}"
                                         SelectionChanged="Combo_Clients_SelectionChanged" />
                                 </Grid>
                                 <GroupBox Header="Depot Path">
-                                    <TextBox />
+                                    <TextBox Text="{Binding DepothPah, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
                                 </GroupBox>
                                 <Button
                                     Margin="5"

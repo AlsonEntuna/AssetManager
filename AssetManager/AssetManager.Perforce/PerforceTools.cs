@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Perforce.P4;
 
 namespace AssetManager.Perforce
@@ -93,6 +94,18 @@ namespace AssetManager.Perforce
             }
 
             return workspaces;
+        }
+
+        public static void SetClient(string client)
+        {
+            if (Repository.GetClients(null).Any(f => f.Name == client))
+            {
+                Connection.SetClient(client);
+            }
+            else
+            {
+                throw new P4Exception(ErrorSeverity.E_FAILED, "Client isn't in the repository");
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using AssetManager.Utils;
+﻿using AssetManager.Encryption;
+using AssetManager.Utils;
 using System;
 using System.IO;
 
@@ -6,10 +7,17 @@ namespace AssetManager.Settings
 {
     internal class AssetManagerSettings
     {
-        public string FolderPath { get; set; }
+        public string FolderPath;
         public static readonly string AppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AssetManager");
+        
         [NonSerialized]
         public readonly string SettingsSavePath = Path.Combine(AppDataPath, Constants.SettingsFileName);
+
+        // Perforce
+        public string PerforceServer;
+        public string PerforceUser;
+        public string PerforcePassword;
+        public string DepotPath;
 
         #region Singleton
         private static AssetManagerSettings _instance;
@@ -33,6 +41,13 @@ namespace AssetManager.Settings
             if (!Directory.Exists(AppDataPath))
             {
                 Directory.CreateDirectory(AppDataPath);
+            }
+
+            // Encrypt Password
+            if (!string.IsNullOrEmpty(PerforcePassword))
+            {
+                string encrypted = Encryptor.Encrypt(PerforcePassword);
+                PerforcePassword = encrypted;
             }
 
             JsonUtils.Serialize(Instance.SettingsSavePath, Instance);

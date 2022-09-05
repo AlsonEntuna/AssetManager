@@ -193,6 +193,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AssetManager.Encryption\AssetManager.Encryption.csproj">
+      <Project>{7152E91A-D1A9-4D72-9402-549B8A7C98AF}</Project>
+      <Name>AssetManager.Encryption</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AssetManager.Perforce\AssetManager.Perforce.csproj">
       <Project>{134BE799-678B-4E23-B655-A4BEB185B545}</Project>
       <Name>AssetManager.Perforce</Name>

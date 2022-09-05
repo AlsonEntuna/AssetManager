@@ -15,11 +15,6 @@ using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using System.Threading;
-
-using Camera = HelixToolkit.Wpf.SharpDX.Camera;
-using OrthographicCamera = HelixToolkit.Wpf.SharpDX.OrthographicCamera;
-using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
-using System.Threading.Tasks;
 using Microsoft.Win32;
 using System.Windows;
 using System;
@@ -28,6 +23,12 @@ using System.IO;
 using AssetManager.Utils;
 using System.Diagnostics;
 using System.Windows.Threading;
+using System.Threading.Tasks;
+
+using Camera = HelixToolkit.Wpf.SharpDX.Camera;
+using OrthographicCamera = HelixToolkit.Wpf.SharpDX.OrthographicCamera;
+using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
+using System.Windows.Data;
 
 namespace AssetManager.ViewModel
 {
@@ -58,6 +59,16 @@ namespace AssetManager.ViewModel
         public Dispatcher Dispatcher { get; set; }
 
         #region P4Connection
+        private string _client;
+        public string Client
+        {
+            get => _client;
+            set
+            {
+                SetProperty(ref _client, value);
+                PerforceTools.SetClient(_client);
+            }
+        }
         private ObservableCollection<string> _workspaces;
         public ObservableCollection<string> Workspaces
         {
@@ -71,6 +82,14 @@ namespace AssetManager.ViewModel
             get => _isConnected;
             set => SetProperty(ref _isConnected, value);
         }
+
+        public string DepothPah
+        {
+            get => AssetManagerSettings.Instance.DepotPath;
+            set => SetProperty(ref AssetManagerSettings.Instance.DepotPath, value);
+        }
+
+
         #endregion
 
         #region HelixComponents
@@ -175,16 +194,11 @@ namespace AssetManager.ViewModel
         {
             // Initialize the list of Objects
             ObjectDisplay = new ObservableCollection<ObjectDisplayWrapper>();
+            
             // Initialize the ObjectHandler
             _objHandler = new ObjectsHandler();
 
-            // Check for Settings if it's present
-            if (File.Exists(AssetManagerSettings.Instance.SettingsSavePath))
-            {
-                AssetManagerSettings settings = JsonUtils.Deserialize<AssetManagerSettings>(AssetManagerSettings.Instance.SettingsSavePath);
-                AssetManagerSettings.Instance.FolderPath = settings.FolderPath;
-                Task.Run(() => { BuildAssetDirectory(AssetManagerSettings.Instance.FolderPath); });
-            }
+            BindingOperations.EnableCollectionSynchronization(_objHandler.Objects, padlock);
 
             // Initializing the Helix components and dependencies
             EffectsManager = new DefaultEffectsManager();
@@ -204,9 +218,26 @@ namespace AssetManager.ViewModel
             Dispose();
         }
 
+        public void CheckForSettings()
+        {
+            // Check for Settings if it's present
+            if (File.Exists(AssetManagerSettings.Instance.SettingsSavePath))
+            {
+                // TODO: find a way to make this easier in code
+                // NOTE: Always add the loaded objects here for the AssetManagerSettings
+                AssetManagerSettings settings = JsonUtils.Deserialize<AssetManagerSettings>(AssetManagerSettings.Instance.SettingsSavePath);
+                AssetManagerSettings.Instance.FolderPath = settings.FolderPath;
+                AssetManagerSettings.Instance.PerforceServer = settings.PerforceServer;
+                AssetManagerSettings.Instance.PerforceUser = settings.PerforceUser;
+                AssetManagerSettings.Instance.PerforcePassword = settings.PerforcePassword;
+
+                Task.Run(() => { BuildAssetDirectory(AssetManagerSettings.Instance.FolderPath); });
+            }
+        }
+
         private void Sync()
         {
-            //PerforceTools.Sync();
+            PerforceTools.Sync(DepothPah, out var syncedFiles);
         }
 
         private void OpenRootFolder()
@@ -224,12 +255,15 @@ namespace AssetManager.ViewModel
             PerforceLoginSetup p4Win = new PerforceLoginSetup();
             PerforceLoginViewModel vm = new PerforceLoginViewModel();
             p4Win.DataContext = vm;
-            p4Win.ShowDialog();
+            p4Win.Setup();
 
-            // TODO: this is temporary. Find a good way to do this update...
-            IsConnected = PerforceTools.Connection.connectionEstablished();
-            if (IsConnected)
-                SetupPerforceDependencies();
+            if (p4Win.ShowDialog() ?? true)
+            {
+                // TODO: this is temporary. Find a good way to do this update...
+                IsConnected = PerforceTools.Connection.connectionEstablished();
+                if (IsConnected)
+                    SetupPerforceDependencies();
+            }
         }
 
         private string OpenFileDialog(string filter)
@@ -349,9 +383,13 @@ namespace AssetManager.ViewModel
                 return;
             }
 
+            if (IsLoading)
+                return;
+
             DirectoryInfo dirInfo = new DirectoryInfo(folderPath);
             FileInfo[] files = dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly);
             IsLoading = true;
+
             Thread processThread = new Thread(() =>
             {
                 foreach (var dir in dirInfo.GetDirectories())
@@ -360,24 +398,26 @@ namespace AssetManager.ViewModel
                     {
                         foreach (var file in dir.GetFiles())
                         {
+                            //lock(padlock)
                             _objHandler.GenerateObjectWrapper(file.FullName);
                         }
                         BuildAssetDirectory(dir.FullName);
                     }
                     catch (UnauthorizedAccessException e)
                     {
+                        Console.WriteLine(e.Message);
                         continue;
                     }
                 }
-                //Action action = () => OnProcessObjThreadDone();
-                //Dispatcher.BeginInvoke(action);
+                Action action = () => OnProcessObjThreadDone();
+                Dispatcher.BeginInvoke(action);
             })
             {
                 IsBackground = true
             };
             processThread.Start();
-            processThread.Join();
-            OnProcessObjThreadDone();
+            //processThread.Join();
+            //OnProcessObjThreadDone();
             
         }
 
@@ -390,11 +430,12 @@ namespace AssetManager.ViewModel
         private void SetupOfflineMode()
         {
             OfflineSetupView window = new OfflineSetupView();
-            window.ShowDialog();
-            if (window.DialogResult == true)
+            if (window.ShowDialog() ?? true)
             {
                 AssetManagerSettings.Instance.FolderPath = window.FolderPath;
                 AssetManagerSettings.Instance.SaveSettings();
+
+                _objHandler.Objects.Clear();
                 BuildAssetDirectory(AssetManagerSettings.Instance.FolderPath);
             }
         }
@@ -418,15 +459,19 @@ namespace AssetManager.ViewModel
         private bool _disposingValue = false;
         public void Dispose()
         {
+            Console.WriteLine("Disposing...");
             if (!_disposingValue)
             {
+                // Save the Settings
+                AssetManagerSettings.Instance.SaveSettings();
+
                 if (EffectsManager != null)
                 {
                     var effectManager = EffectsManager as IDisposable;
                     Disposer.RemoveAndDispose(ref effectManager);
                 }
                 _disposingValue = true;
-                GC.SuppressFinalize(this);
+                GC.SuppressFinalize(this);   
             }
         }
         #endregion

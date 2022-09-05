@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.32802.440
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssetManager", "AssetManager\AssetManager.csproj", "{57FB1CE4-5C8A-402F-B0C7-19562425C95D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssetManager.Wpf", "AssetManager.Wpf\AssetManager.Wpf.csproj", "{EFD4A4B3-39B6-42FD-9E42-799FFC25937E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssetManager.Perforce", "AssetManager.Perforce\AssetManager.Perforce.csproj", "{134BE799-678B-4E23-B655-A4BEB185B545}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssetManager.Encryption", "AssetManager.Encryption\AssetManager.Encryption.csproj", "{7152E91A-D1A9-4D72-9402-549B8A7C98AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{134BE799-678B-4E23-B655-A4BEB185B545}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{134BE799-678B-4E23-B655-A4BEB185B545}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{134BE799-678B-4E23-B655-A4BEB185B545}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7152E91A-D1A9-4D72-9402-549B8A7C98AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7152E91A-D1A9-4D72-9402-549B8A7C98AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7152E91A-D1A9-4D72-9402-549B8A7C98AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7152E91A-D1A9-4D72-9402-549B8A7C98AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

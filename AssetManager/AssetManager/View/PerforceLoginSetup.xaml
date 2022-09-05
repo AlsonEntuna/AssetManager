@@ -58,6 +58,7 @@
             Grid.Row="2"
             Grid.Column="1"
             VerticalContentAlignment="Center"
+            x:Name="PwdBox_P4Password"
             PasswordChanged="PasswordBox_PasswordChanged" />
 
         <Button

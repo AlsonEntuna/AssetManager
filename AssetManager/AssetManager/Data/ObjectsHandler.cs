@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AssetManager.Data
 {
@@ -34,7 +29,8 @@ namespace AssetManager.Data
             }
 
             ObjectDisplayWrapper wrapper = new ObjectDisplayWrapper(Path.GetFileName(path), path, type);
-            Objects.Add(wrapper);
+            if (!Objects.Contains(wrapper))
+                Objects.Add(wrapper);
         }
     }
 }

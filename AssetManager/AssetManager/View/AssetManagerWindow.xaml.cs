@@ -22,6 +22,7 @@ namespace AssetManager.View
             InitializeComponent();
             _vm = DataContext as AssetManagerViewModel;
             _vm.Dispatcher = Dispatcher;
+            _vm.CheckForSettings();
             Combo_ObjType.ItemsSource = Enum.GetValues(typeof(EObjType)).Cast<EObjType>();
         }
 
