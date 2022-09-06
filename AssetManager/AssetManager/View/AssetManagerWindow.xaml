@@ -21,10 +21,11 @@
             <MenuItem Header="File">
                 <MenuItem Command="{Binding LoadFileCommand}" Header="Load File" />
             </MenuItem>
-            <MenuItem Header="Options">
+            <MenuItem Header="Edit">
                 <MenuItem Command="{Binding PerforceSetupCommand}" Header="Perforce Setup" />
-                <Separator />
-                <MenuItem Command="{Binding SetupOfflineModeCommand}" Header="Setup Offline View" />
+            </MenuItem>
+            <MenuItem Header="Options">
+                <MenuItem Command="{Binding SetupOfflineModeCommand}" Header="Offline Mode" />
             </MenuItem>
         </Menu>
         <Grid>
@@ -63,47 +64,45 @@
                 Grid.Row="0"
                 Grid.Column="0"
                 Foreground="{StaticResource Text.Main}"
-                Header="P4"
+                Header="Perforce Options"
                 IsEnabled="{Binding IsConnected, UpdateSourceTrigger=PropertyChanged}">
-                <GroupBox Header="P4" Style="{StaticResource GroupBox.Main}">
+                <StackPanel>
                     <StackPanel>
-                        <GroupBox Header="Workspace">
-                            <StackPanel>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="80" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock
-                                        Grid.Column="0"
-                                        VerticalAlignment="Center"
-                                        Text="Workspace" />
-                                    <ComboBox
-                                        x:Name="Combo_Clients"
-                                        Grid.Column="1"
-                                        ItemsSource="{Binding Workspaces, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                        SelectedIndex="0"
-                                        SelectedItem="{Binding Client, UpdateSourceTrigger=PropertyChanged}"
-                                        SelectionChanged="Combo_Clients_SelectionChanged" />
-                                </Grid>
-                                <GroupBox Header="Depot Path">
-                                    <TextBox Text="{Binding DepothPah, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
-                                </GroupBox>
-                                <Button
-                                    Margin="5"
-                                    Command="{Binding SyncCommand}"
-                                    Content="Sync"
-                                    IsEnabled="{Binding IsConnected, UpdateSourceTrigger=PropertyChanged}"
-                                    Style="{StaticResource ButtonStyle.Main}" />
-                            </StackPanel>
-                        </GroupBox>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="Workspace/Client" />
+                            <ComboBox
+                                x:Name="Combo_Clients"
+                                Grid.Column="1"
+                                ItemsSource="{Binding Workspaces, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                SelectedIndex="0"
+                                SelectedItem="{Binding Client, UpdateSourceTrigger=PropertyChanged}"
+                                SelectionChanged="Combo_Clients_SelectionChanged" />
+                        </Grid>
+                        <TextBlock Text="Depot Path" />
+                        <TextBox
+                            Height="25"
+                            VerticalContentAlignment="Center"
+                            Text="{Binding DepothPah, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
                         <Button
                             Margin="5"
-                            Command="{Binding OpenRootFolderCommand}"
-                            Content="Open Root Folder"
+                            Command="{Binding SyncCommand}"
+                            Content="Sync"
+                            IsEnabled="{Binding IsConnected, UpdateSourceTrigger=PropertyChanged}"
                             Style="{StaticResource ButtonStyle.Main}" />
                     </StackPanel>
-                </GroupBox>
+                    <Button
+                        Margin="5"
+                        Command="{Binding OpenRootFolderCommand}"
+                        Content="Open Root Folder"
+                        Style="{StaticResource ButtonStyle.Main}" />
+                </StackPanel>
             </Expander>
             <Grid Grid.Row="1">
                 <Grid>
@@ -207,10 +206,10 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0">
-                        <Expander Foreground="{StaticResource Text.Main}" Header="Renderer Settings">
+                        <Expander Foreground="{StaticResource Text.Main}" Header="Viewport Settings">
                             <StackPanel>
                                 <CheckBox
-                                    Content="Render Env Map"
+                                    Content="Render Cubemap"
                                     Foreground="White"
                                     IsChecked="{Binding RenderEnvironmentMap, UpdateSourceTrigger=PropertyChanged}" />
                                 <Button

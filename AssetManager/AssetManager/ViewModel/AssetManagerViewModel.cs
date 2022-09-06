@@ -57,6 +57,7 @@ namespace AssetManager.ViewModel
 
         private readonly ObjectsHandler _objHandler;
         public Dispatcher Dispatcher { get; set; }
+        private static readonly object padlock = new object();
 
         #region P4Connection
         private string _client;
@@ -204,11 +205,12 @@ namespace AssetManager.ViewModel
             EffectsManager = new DefaultEffectsManager();
             Camera = new PerspectiveCamera()
             {
-                LookDirection = new Vector3D(0, -10, -10),
+                LookDirection = new Vector3D(0, 0, -10),
                 Position = new Point3D(0, 0, 0),
                 UpDirection = new Vector3D(0, 1, 0),
                 FarPlaneDistance = 100000,
-                NearPlaneDistance = 0.1f
+                NearPlaneDistance = 0.1f,
+                FieldOfView = 90.0f
             };
             EnvironmentMap = TextureModel.Create("Resources/cubemap_default.dds");
         }
@@ -374,8 +376,6 @@ namespace AssetManager.ViewModel
             (Camera as PerspectiveCamera).FarPlaneDistance = 5000;
             (Camera as PerspectiveCamera).NearPlaneDistance = 0.1f;
         }
-
-        private static readonly object padlock = new object();
         private void BuildAssetDirectory(string folderPath)
         {
             if (!Directory.Exists(folderPath))
@@ -415,10 +415,7 @@ namespace AssetManager.ViewModel
             {
                 IsBackground = true
             };
-            processThread.Start();
-            //processThread.Join();
-            //OnProcessObjThreadDone();
-            
+            processThread.Start();            
         }
 
         private void OnProcessObjThreadDone() 
