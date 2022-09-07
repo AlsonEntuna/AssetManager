@@ -98,6 +98,10 @@ namespace AssetManager.Perforce
 
         public static void SetClient(string client)
         {
+            if (Connection == null)
+            {
+                return;
+            }
             if (Repository.GetClients(null).Any(f => f.Name == client))
             {
                 Connection.SetClient(client);

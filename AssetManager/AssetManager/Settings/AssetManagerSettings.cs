@@ -17,6 +17,7 @@ namespace AssetManager.Settings
         public string PerforceServer;
         public string PerforceUser;
         public string PerforcePassword;
+        public string PerforceClient;
         public string DepotPath;
 
         #region Singleton

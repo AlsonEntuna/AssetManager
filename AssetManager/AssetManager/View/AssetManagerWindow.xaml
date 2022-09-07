@@ -65,8 +65,8 @@
                 Grid.Column="0"
                 Foreground="{StaticResource Text.Main}"
                 Header="Perforce Options"
-                IsEnabled="{Binding IsConnected, UpdateSourceTrigger=PropertyChanged}">
-                <StackPanel>
+                IsExpanded="True">
+                <StackPanel IsEnabled="{Binding IsConnected, UpdateSourceTrigger=PropertyChanged}">
                     <StackPanel>
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -81,15 +81,14 @@
                                 x:Name="Combo_Clients"
                                 Grid.Column="1"
                                 ItemsSource="{Binding Workspaces, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                SelectedIndex="0"
-                                SelectedItem="{Binding Client, UpdateSourceTrigger=PropertyChanged}"
+                                SelectedItem="{Binding Client, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                                 SelectionChanged="Combo_Clients_SelectionChanged" />
                         </Grid>
                         <TextBlock Text="Depot Path" />
                         <TextBox
                             Height="25"
                             VerticalContentAlignment="Center"
-                            Text="{Binding DepothPah, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                            Text="{Binding DepotPath, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
                         <Button
                             Margin="5"
                             Command="{Binding SyncCommand}"

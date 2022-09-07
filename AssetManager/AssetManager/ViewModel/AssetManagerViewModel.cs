@@ -67,7 +67,8 @@ namespace AssetManager.ViewModel
             set
             {
                 SetProperty(ref _client, value);
-                PerforceTools.SetClient(_client);
+                AssetManagerSettings.Instance.PerforceClient = _client;
+                PerforceTools.SetClient(AssetManagerSettings.Instance.PerforceClient);
             }
         }
         private ObservableCollection<string> _workspaces;
@@ -84,10 +85,15 @@ namespace AssetManager.ViewModel
             set => SetProperty(ref _isConnected, value);
         }
 
-        public string DepothPah
+        public string _depotPath;
+        public string DepotPath
         {
-            get => AssetManagerSettings.Instance.DepotPath;
-            set => SetProperty(ref AssetManagerSettings.Instance.DepotPath, value);
+            get => _depotPath;
+            set
+            {
+                SetProperty(ref _depotPath, value); 
+                AssetManagerSettings.Instance.DepotPath = _depotPath;
+            }
         }
 
 
@@ -232,14 +238,31 @@ namespace AssetManager.ViewModel
                 AssetManagerSettings.Instance.PerforceServer = settings.PerforceServer;
                 AssetManagerSettings.Instance.PerforceUser = settings.PerforceUser;
                 AssetManagerSettings.Instance.PerforcePassword = settings.PerforcePassword;
+                AssetManagerSettings.Instance.DepotPath = settings.DepotPath;
+                Client = settings.PerforceClient;
+                DepotPath = settings.DepotPath;
 
                 Task.Run(() => { BuildAssetDirectory(AssetManagerSettings.Instance.FolderPath); });
+                //Thread buildThread = new Thread(() =>
+                //{
+                //    BuildAssetDirectory(AssetManagerSettings.Instance.FolderPath);
+                //})
+                //{ IsBackground = true };
+                //buildThread.Start();
             }
         }
 
         private void Sync()
         {
-            PerforceTools.Sync(DepothPah, out var syncedFiles);
+            PerforceTools.Sync($"{DepotPath}...", out var syncedFiles);
+            Task.Run(() => { BuildAssetDirectory(PerforceTools.Connection.Client.Root); });
+            //Thread buildThread = new Thread(() =>
+            //{
+            //    IsLoading = true;
+            //    BuildAssetDirectory(PerforceTools.Connection.Client.Root);
+            //})
+            //{ IsBackground = true };
+            //buildThread.Start();
         }
 
         private void OpenRootFolder()
@@ -386,8 +409,8 @@ namespace AssetManager.ViewModel
             if (IsLoading)
                 return;
 
+            _objHandler.Objects.Clear();
             DirectoryInfo dirInfo = new DirectoryInfo(folderPath);
-            FileInfo[] files = dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly);
             IsLoading = true;
 
             Thread processThread = new Thread(() =>
@@ -396,7 +419,7 @@ namespace AssetManager.ViewModel
                 {
                     try
                     {
-                        foreach (var file in dir.GetFiles())
+                        foreach (var file in dir.GetFiles("*.*", SearchOption.AllDirectories))
                         {
                             //lock(padlock)
                             _objHandler.GenerateObjectWrapper(file.FullName);
@@ -432,7 +455,6 @@ namespace AssetManager.ViewModel
                 AssetManagerSettings.Instance.FolderPath = window.FolderPath;
                 AssetManagerSettings.Instance.SaveSettings();
 
-                _objHandler.Objects.Clear();
                 BuildAssetDirectory(AssetManagerSettings.Instance.FolderPath);
             }
         }
