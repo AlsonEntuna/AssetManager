@@ -7,11 +7,12 @@ namespace AssetManager.Settings
 {
     internal class AssetManagerSettings
     {
-        public string FolderPath;
         public static readonly string AppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AssetManager");
         
         [NonSerialized]
         public readonly string SettingsSavePath = Path.Combine(AppDataPath, Constants.SettingsFileName);
+
+        public string FolderPath;
 
         // Perforce
         public string PerforceServer;

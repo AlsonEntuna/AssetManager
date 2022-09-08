@@ -30,7 +30,7 @@
         </Menu>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="400" />
+                <ColumnDefinition Width="450" />
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
@@ -64,53 +64,67 @@
                 Grid.Row="0"
                 Grid.Column="0"
                 Foreground="{StaticResource Text.Main}"
-                Header="Perforce Options"
                 IsExpanded="True">
-                <StackPanel IsEnabled="{Binding IsConnected, UpdateSourceTrigger=PropertyChanged}">
-                    <StackPanel>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock
-                                Grid.Column="0"
-                                VerticalAlignment="Center"
-                                Text="Workspace/Client" />
-                            <ComboBox
-                                x:Name="Combo_Clients"
-                                Grid.Column="1"
-                                ItemsSource="{Binding Workspaces, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                SelectedItem="{Binding Client, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                                SelectionChanged="Combo_Clients_SelectionChanged" />
-                        </Grid>
-                        <TextBlock Text="Depot Path" />
-                        <TextBox
-                            Height="25"
-                            VerticalContentAlignment="Center"
-                            Text="{Binding DepotPath, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                <Expander.Header>
+                    <TextBlock Style="{StaticResource TextBlock.Header1}" Text="Perforce" />
+                </Expander.Header>
+                <Border Background="{StaticResource Menu.Disabled.Foreground}">
+                    <StackPanel Margin="10" IsEnabled="{Binding IsConnected, UpdateSourceTrigger=PropertyChanged}">
+                        <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Text="Workspace/Client:" />
+                                <ComboBox
+                                    x:Name="Combo_Clients"
+                                    Grid.Column="1"
+                                    ItemsSource="{Binding Workspaces, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    SelectedItem="{Binding Client, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                    SelectionChanged="Combo_Clients_SelectionChanged" />
+                            </Grid>
+                            <TextBlock Text="Depot Path" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="80" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox
+                                    Grid.Column="0"
+                                    Height="30"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding DepotPath, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                                <Button
+                                    Grid.Column="1"
+                                    Margin="5"
+                                    Command="{Binding SyncCommand}"
+                                    Content="Sync"
+                                    IsEnabled="{Binding IsConnected, UpdateSourceTrigger=PropertyChanged}"
+                                    Style="{StaticResource ButtonStyle.Main}" />
+                            </Grid>
+                        </StackPanel>
                         <Button
-                            Margin="5"
-                            Command="{Binding SyncCommand}"
-                            Content="Sync"
-                            IsEnabled="{Binding IsConnected, UpdateSourceTrigger=PropertyChanged}"
+                            Command="{Binding OpenRootFolderCommand}"
+                            Content="Open Root Folder"
                             Style="{StaticResource ButtonStyle.Main}" />
                     </StackPanel>
-                    <Button
-                        Margin="5"
-                        Command="{Binding OpenRootFolderCommand}"
-                        Content="Open Root Folder"
-                        Style="{StaticResource ButtonStyle.Main}" />
-                </StackPanel>
+                </Border>
             </Expander>
             <Grid Grid.Row="1">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="30" />
-                        <RowDefinition Height="30" />
+                        <RowDefinition Height="35" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Row="0" Margin="5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="50" />
                             <ColumnDefinition Width="*" />
@@ -119,7 +133,7 @@
                             Grid.Column="0"
                             VerticalAlignment="Center"
                             Style="{StaticResource TextBlock.Main}"
-                            Text="Type: " />
+                            Text="FileType: " />
                         <ComboBox
                             x:Name="Combo_ObjType"
                             Grid.Column="1"
@@ -128,7 +142,10 @@
                             SelectedItem="{Binding SelectedObjType, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                             SelectionChanged="Combo_ObjType_SelectionChanged" />
                     </Grid>
-                    <Grid Grid.Row="1">
+                    <Grid
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Margin="5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="50" />
                             <ColumnDefinition Width="*" />
@@ -145,7 +162,9 @@
                     </Grid>
                     <DataGrid
                         x:Name="DataGrid_Objects"
-                        Grid.Row="2"
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
                         Margin="0,10,0,0"
                         AutoGenerateColumns="False"
                         Background="{StaticResource Main.Background}"
@@ -205,7 +224,10 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0">
-                        <Expander Foreground="{StaticResource Text.Main}" Header="Viewport Settings">
+                        <Expander>
+                            <Expander.Header>
+                                <TextBlock Style="{StaticResource TextBlock.Header1}" Text="Viewport Settings" />
+                            </Expander.Header>
                             <StackPanel>
                                 <CheckBox
                                     Content="Render Cubemap"

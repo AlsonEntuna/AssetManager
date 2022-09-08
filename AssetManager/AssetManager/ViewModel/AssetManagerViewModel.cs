@@ -24,11 +24,12 @@ using AssetManager.Utils;
 using System.Diagnostics;
 using System.Windows.Threading;
 using System.Threading.Tasks;
+using System.Windows.Data;
 
 using Camera = HelixToolkit.Wpf.SharpDX.Camera;
 using OrthographicCamera = HelixToolkit.Wpf.SharpDX.OrthographicCamera;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
-using System.Windows.Data;
+
 
 namespace AssetManager.ViewModel
 {
@@ -56,6 +57,7 @@ namespace AssetManager.ViewModel
         }
 
         private readonly ObjectsHandler _objHandler;
+        private bool _hasCacheFile = false;
         public Dispatcher Dispatcher { get; set; }
         private static readonly object padlock = new object();
 
@@ -226,7 +228,7 @@ namespace AssetManager.ViewModel
             Dispose();
         }
 
-        public void CheckForSettings()
+        public async void CheckForSettings()
         {
             // Check for Settings if it's present
             if (File.Exists(AssetManagerSettings.Instance.SettingsSavePath))
@@ -242,27 +244,42 @@ namespace AssetManager.ViewModel
                 Client = settings.PerforceClient;
                 DepotPath = settings.DepotPath;
 
-                Task.Run(() => { BuildAssetDirectory(AssetManagerSettings.Instance.FolderPath); });
-                //Thread buildThread = new Thread(() =>
-                //{
-                //    BuildAssetDirectory(AssetManagerSettings.Instance.FolderPath);
-                //})
-                //{ IsBackground = true };
-                //buildThread.Start();
+                // Login to Perforce
+                IsLoading = true;
+                await Task.Run(() =>
+                {
+                    LoginToPerforce();
+                }).ContinueWith((result) =>
+                {
+                    IsLoading = false;
+                    if (result.IsCompleted)
+                    {
+                        var objCache = AssetManagerObjectsCache.LoadCache();
+                        if (objCache != null)
+                        {
+                            ObjectDisplay = Utils.Utils.ToObservableCollection(objCache.ObjectCache);
+                        }
+                        else
+                        {
+                            BuildAssetDirectory(AssetManagerSettings.Instance.FolderPath);
+                        }
+                    }
+                }, TaskScheduler.FromCurrentSynchronizationContext()); ;     
             }
+        }
+
+        private void LoginToPerforce()
+        {
+            string password = Encryption.Encryptor.Decrypt(AssetManagerSettings.Instance.PerforcePassword);
+            IsConnected = PerforceTools.Connect(AssetManagerSettings.Instance.PerforceServer, AssetManagerSettings.Instance.PerforceUser, password);
+            if (IsConnected)
+                SetupPerforceDependencies();
         }
 
         private void Sync()
         {
             PerforceTools.Sync($"{DepotPath}...", out var syncedFiles);
             Task.Run(() => { BuildAssetDirectory(PerforceTools.Connection.Client.Root); });
-            //Thread buildThread = new Thread(() =>
-            //{
-            //    IsLoading = true;
-            //    BuildAssetDirectory(PerforceTools.Connection.Client.Root);
-            //})
-            //{ IsBackground = true };
-            //buildThread.Start();
         }
 
         private void OpenRootFolder()
@@ -371,19 +388,6 @@ namespace AssetManager.ViewModel
                         }
 
                         GroupModel.AddNode(scene.Root);
-                        //if (scene.HasAnimation)
-                        //{
-                        //    var dict = scene.Animations.CreateAnimationUpdaters();
-                        //    foreach (var ani in dict.Values)
-                        //    {
-                        //        Animations.Add(ani);
-                        //    }
-                        //}
-                        //foreach (var n in scene.Root.Traverse())
-                        //{
-                        //    n.Tag = new AttachedNodeViewModel(n);
-                        //}
-                        //FocusCameraToScene();
                     }
                 }
                 else if (result.IsFaulted && result.Exception != null)
@@ -402,14 +406,14 @@ namespace AssetManager.ViewModel
         private void BuildAssetDirectory(string folderPath)
         {
             if (!Directory.Exists(folderPath))
-            {
                 return;
-            }
 
             if (IsLoading)
                 return;
 
             _objHandler.Objects.Clear();
+            AssetManagerSettings.Instance.FolderPath = folderPath;
+            AssetManagerSettings.Instance.SaveSettings();
             DirectoryInfo dirInfo = new DirectoryInfo(folderPath);
             IsLoading = true;
 
@@ -444,7 +448,10 @@ namespace AssetManager.ViewModel
         private void OnProcessObjThreadDone() 
         {
             IsLoading = false;
+            lock (padlock)
             ObjectDisplay = _objHandler.Objects;
+            var cache = new AssetManagerObjectsCache() { ObjectCache = _objHandler.Objects.ToList() };
+            cache.SaveObjectsCache();
         }
 
         private void SetupOfflineMode()
@@ -452,10 +459,7 @@ namespace AssetManager.ViewModel
             OfflineSetupView window = new OfflineSetupView();
             if (window.ShowDialog() ?? true)
             {
-                AssetManagerSettings.Instance.FolderPath = window.FolderPath;
-                AssetManagerSettings.Instance.SaveSettings();
-
-                BuildAssetDirectory(AssetManagerSettings.Instance.FolderPath);
+                BuildAssetDirectory(window.FolderPath);
             }
         }
 

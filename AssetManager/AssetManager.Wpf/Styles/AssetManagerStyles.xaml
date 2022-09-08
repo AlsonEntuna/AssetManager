@@ -39,6 +39,10 @@
     <Style x:Key="TextBlock.Main" TargetType="TextBlock">
         <Setter Property="Foreground" Value="{StaticResource Text.Main}" />
     </Style>
+    <Style x:Key="TextBlock.Header1" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource Text.Main}" />
+        <Setter Property="FontSize" Value="20" />
+    </Style>
 
     <!--  GroupBox  -->
     <Style x:Key="GroupBox.Main" TargetType="GroupBox">

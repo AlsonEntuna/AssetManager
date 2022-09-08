@@ -132,6 +132,7 @@
     <Compile Include="Data\ObjectDisplayWrapper.cs" />
     <Compile Include="Data\ObjectsHandler.cs" />
     <Compile Include="Data\ObjectTypes.cs" />
+    <Compile Include="Settings\AssetManagerObjectsCache.cs" />
     <Compile Include="Settings\AssetManagerSettings.cs" />
     <Compile Include="Settings\Constants.cs" />
     <Compile Include="Utils\JsonUtils.cs" />
