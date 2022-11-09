@@ -26,6 +26,8 @@
             </MenuItem>
             <MenuItem Header="Options">
                 <MenuItem Command="{Binding SetupOfflineModeCommand}" Header="Offline Mode" />
+                <Separator />
+                <MenuItem Command="{Binding ClearObjectsCacheCommand}" Header="Clear Objects Cache" />
             </MenuItem>
         </Menu>
         <Grid>
@@ -229,11 +231,14 @@
                                 <TextBlock Style="{StaticResource TextBlock.Header1}" Text="Viewport Settings" />
                             </Expander.Header>
                             <StackPanel>
-                                <CheckBox
-                                    Content="Render Cubemap"
-                                    Foreground="White"
-                                    IsChecked="{Binding RenderEnvironmentMap, UpdateSourceTrigger=PropertyChanged}" />
+                                <GroupBox Header="Options" Style="{StaticResource GroupBox.Main}">
+                                    <CheckBox
+                                        Content="Render Cubemap"
+                                        Foreground="White"
+                                        IsChecked="{Binding RenderEnvironmentMap, UpdateSourceTrigger=PropertyChanged}" />
+                                </GroupBox>
                                 <Button
+                                    Margin="10"
                                     Command="{Binding ResetCameraCommand}"
                                     Content="Reset Camera"
                                     Style="{StaticResource ButtonStyle.Main}" />

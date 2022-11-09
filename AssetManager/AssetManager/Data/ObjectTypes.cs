@@ -10,6 +10,10 @@
         Max,
         Blender,
         Gltf,
-        Collada
+        Collada,
+        Png,
+        Jpeg,
+        Tiff,
+        Targa
     }
 }

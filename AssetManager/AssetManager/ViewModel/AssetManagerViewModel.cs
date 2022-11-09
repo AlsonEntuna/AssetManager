@@ -195,6 +195,7 @@ namespace AssetManager.ViewModel
         public ICommand LoadFileCommand => new RelayCommand<string>(LoadFile);
         public ICommand ResetCameraCommand => new RelayCommand(ResetCamera);
         public ICommand SetupOfflineModeCommand => new RelayCommand(SetupOfflineMode);
+        public ICommand ClearObjectsCacheCommand => new RelayCommand(ClearObjectsCache);
         public ICommand PreviewCommand => new RelayCommand(PreviewObject);
         public ICommand BrowseToPathCommand => new RelayCommand(BrowseToPath);
         #endregion
@@ -254,7 +255,7 @@ namespace AssetManager.ViewModel
                     IsLoading = false;
                     if (result.IsCompleted)
                     {
-                        var objCache = AssetManagerObjectsCache.LoadCache();
+                        AssetManagerObjectsCache objCache = AssetManagerObjectsCache.LoadCache();
                         if (objCache != null)
                         {
                             ObjectDisplay = Utils.Utils.ToObservableCollection(objCache.ObjectCache);
@@ -476,6 +477,12 @@ namespace AssetManager.ViewModel
 
             string dirPath = Path.GetDirectoryName(SelectedObj.Path);
             Process.Start(dirPath);
+        }
+
+        private void ClearObjectsCache()
+        {
+            AssetManagerObjectsCache assetManagerCache = AssetManagerObjectsCache.LoadCache();
+            assetManagerCache?.ClearCache();
         }
 
         #region Dispose

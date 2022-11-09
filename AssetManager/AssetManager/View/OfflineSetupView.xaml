@@ -39,6 +39,7 @@
             <Button
                 x:Name="Btn_Done"
                 Height="40"
+                Margin="10"
                 Click="Btn_Done_Click"
                 Content="Done"
                 Style="{StaticResource ButtonStyle.Main}" />

@@ -15,7 +15,7 @@ namespace AssetManager.Data
         {
             string ext = Path.GetExtension(path);
             EObjType type;
-            switch (ext)
+            switch (ext.ToLower())
             {
                 case ".fbx": type = EObjType.Fbx; break;
                 case ".obj": type = EObjType.Obj; break;
@@ -26,6 +26,12 @@ namespace AssetManager.Data
                 case ".gltf": type = EObjType.Gltf; break;
                 case ".dae": type = EObjType.Collada; break;
                 default: type = EObjType.Unknown; break;
+            }
+
+            // Ignore unknown types...
+            if (type == EObjType.Unknown)
+            {
+                return;
             }
 
             ObjectDisplayWrapper wrapper = new ObjectDisplayWrapper(Path.GetFileName(path), path, type);

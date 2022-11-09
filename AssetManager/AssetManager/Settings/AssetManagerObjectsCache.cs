@@ -26,6 +26,12 @@ namespace AssetManager.Settings
             JsonUtils.Serialize(ObjectsCachePath, this);
         }
 
+        public void ClearCache()
+        {
+            ObjectCache.Clear();
+            SaveObjectsCache();
+        }
+
         public static AssetManagerObjectsCache LoadCache()
         {
             if (!File.Exists(AssetManagerObjectsCache.ObjectsCachePath))
