@@ -78,11 +78,9 @@ namespace AssetManager.Perforce
                 server = Connection.Server.Address.Uri;
             }
             ClientsCmdOptions opts = new ClientsCmdOptions(ClientsCmdFlags.None, user, null, 0, null);
-            
-            IList<Client> clients = null;
             try
             {
-                clients = Repository.GetClients(opts);
+                IList<Client> clients = Repository.GetClients(opts);
                 foreach (Client client in clients)
                 {
                     workspaces.Add(client.Name);
