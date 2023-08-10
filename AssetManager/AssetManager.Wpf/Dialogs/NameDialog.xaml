@@ -1,24 +1,40 @@
-﻿<Window x:Class="AssetManager.Wpf.Dialogs.NameDialog"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:AssetManager.Wpf.Dialogs"
-        mc:Ignorable="d"
-        SizeToContent="Height"
-        Title="NameDialog" Height="450" Width="800">
+﻿<Window
+    x:Class="AssetManager.Wpf.Dialogs.NameDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:AssetManager.Wpf.Dialogs"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="NameDialog"
+    Width="800"
+    Height="450"
+    SizeToContent="Height"
+    mc:Ignorable="d">
     <Grid>
         <StackPanel>
-            <GroupBox Header="Enter Name" x:Name="Description">
-                <TextBox Height="30" x:Name="Txt_Value" VerticalContentAlignment="Center"/>
+            <GroupBox x:Name="Description" Header="Enter Name">
+                <TextBox
+                    x:Name="Txt_Value"
+                    Height="30"
+                    VerticalContentAlignment="Center" />
             </GroupBox>
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Button x:Name="Btn_Ok" Click="Btn_Ok_Click" Content="Ok" Grid.Column="0" Style="{StaticResource ButtonStyle.Main}"/>
-                <Button Content="Cancel" Click="Btn_Cancel_Click" x:Name="Btn_Cancel" Grid.Column="1" Style="{StaticResource ButtonStyle.Main}"/>
+                <Button
+                    x:Name="Btn_Ok"
+                    Grid.Column="0"
+                    Click="Btn_Ok_Click"
+                    Content="Ok"
+                    Style="{StaticResource ButtonStyle.Main}" />
+                <Button
+                    x:Name="Btn_Cancel"
+                    Grid.Column="1"
+                    Click="Btn_Cancel_Click"
+                    Content="Cancel"
+                    Style="{StaticResource ButtonStyle.Main}" />
             </Grid>
         </StackPanel>
     </Grid>
